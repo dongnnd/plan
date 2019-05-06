@@ -8,7 +8,6 @@ import android.content.Context;
 public class MainController extends AbsController{
     private MutableLiveData<Boolean> mStateDrawer = new MutableLiveData<>();
     public boolean mIsShowFloatingButton = true;
-    private
 
     public MainController(Application application){
         super(application);

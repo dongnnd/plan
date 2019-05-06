@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/nav_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_header_height"
+        layout="@layout/nav_header"/>
+    <include
+        android:id="@+id/nav_today"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/nav_header"
+        android:layout_height="@dimen/nav_tag_height"
+        layout="@layout/nav_today"/>
+    <include
+        android:id="@+id/nav_upcoming"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/nav_today"
+        android:layout_height="@dimen/nav_tag_height"
+        layout="@layout/nav_upcoming"/>
+    <include
+        android:id="@+id/nav_important"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_tag_height"
+        layout="@layout/nav_important"
+        android:layout_below="@+id/nav_upcoming"/>
+    <View
+        android:id="@+id/nav_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/nav_important"
+        android:background="#111111"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/nav_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/nav_divider"></android.support.v7.widget.RecyclerView>
+    <include
+        android:id="@+id/nav_addlist"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_tag_height"
+        android:layout_alignParentBottom="true"
+        layout="@layout/nav_addlist"/>
+</RelativeLayout>

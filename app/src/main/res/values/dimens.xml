@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Navigation-->
+    <dimen name="nav_header_height">150dp</dimen>
+    <dimen name="nav_tag_height">50dp</dimen>
+
+    <!--Addlist dialog-->
+    <dimen name="add_list_text_size_dialog">17sp</dimen>
+</resources>

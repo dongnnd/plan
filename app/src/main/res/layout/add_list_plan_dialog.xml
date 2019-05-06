@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="100dp"
+    >
+
+    <EditText
+        android:id="@+id/edt_add_plan_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tv_add_plan_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_plan_name_exist"
+        android:textStyle="italic"
+        android:paddingLeft="?android:dialogPreferredPadding"
+        android:layout_below="@+id/edt_add_plan_name"
+        android:textColor="@color/color_add_plan_text_error"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tv_add_plan_error"
+        android:layout_alignParentEnd="true">
+        <TextView
+            android:id="@+id/tv_add_plan_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/add_plan_btn_cancel"
+            android:textSize="@dimen/add_list_text_size_dialog"
+            android:layout_margin="10dp"/>
+        <TextView
+            android:id="@+id/tv_add_plan_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_margin="10dp"
+            android:enabled="false"
+            android:textSize="@dimen/add_list_text_size_dialog"
+            android:text="@string/add_plan_btn_done"/>
+    </LinearLayout>
+
+</RelativeLayout>

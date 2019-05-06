@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Plan</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--Add plan dialog-->
+    <string name="add_plan_title">Add Plan</string>
+    <string name="add_plan_btn_done">DONE</string>
+    <string name="add_plan_btn_cancel">CANCEL</string>
+    <string name="add_plan_name_exist">Empty name or name already exist.</string>
+
+    <!--Toast-->
+    <string name="add_plan_error_string">Enter your plan name</string>
+
+
+    <!--Bottom sheet add task-->
+    <string name="add_task_edt_hide">Name new task</string>
+</resources>

@@ -17,12 +17,41 @@
         android:layout_marginRight="10dp"
         android:hint="@string/add_task_edt_hide"></EditText>
 
-    <Button
+
+    <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_today"
-        android:text="Add To Day"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/button_bottom_sheet_border"/>
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_sheet_add_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_today"
+                android:text="@string/add_to_list"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_bottom_sheet_border"/>
+            <Button
+                android:id="@+id/btn_sheet_remind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_today"
+                android:text="@string/remind_me"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_bottom_sheet_border"/>
+            <Button
+                android:id="@+id/btn_sheet_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_today"
+                android:text="@string/repeat_me"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_bottom_sheet_border"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
 </LinearLayout>

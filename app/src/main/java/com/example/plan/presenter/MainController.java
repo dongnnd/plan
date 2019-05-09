@@ -5,9 +5,13 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
-public class MainController extends AbsController{
+import com.example.plan.ui.storage.model.ListPlan;
+import com.example.plan.usecase.IDataCallback;
+
+import java.util.List;
+
+public class MainController extends AbsController implements IDataCallback<ListPlan> {
     private MutableLiveData<Boolean> mStateDrawer = new MutableLiveData<>();
-    public boolean mIsShowFloatingButton = true;
 
     public MainController(Application application){
         super(application);
@@ -21,16 +25,22 @@ public class MainController extends AbsController{
         mStateDrawer.setValue(value);
     }
 
-    public void showBottomAddTask(){
+    public void loadListPlan(){
 
     }
 
-    public boolean ismIsShowFloatingButton() {
-        return mIsShowFloatingButton;
+    @Override
+    public void dataCallBack(List<ListPlan> data) {
+
     }
 
-    public void setmIsShowFloatingButton(boolean value) {
-        this.mIsShowFloatingButton = value;
+    @Override
+    public void executeFail() {
+
     }
 
+    @Override
+    public void executeSuccess() {
+
+    }
 }

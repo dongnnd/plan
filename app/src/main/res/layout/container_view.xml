@@ -4,8 +4,8 @@
     <data>
         <import type="android.view.View"/>
         <variable
-            name="showFloatingBtn"
-            type="com.example.plan.presenter.MainController" />
+            name="showFloatBtn"
+            type="boolean" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="10dp"
-            android:visibility="@{showFloatingBtn.mIsShowFloatingButton ? View.VISIBLE : View.GONE}"
+            android:visibility="@{showFloatBtn ? View.VISIBLE : View.GONE}"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <include

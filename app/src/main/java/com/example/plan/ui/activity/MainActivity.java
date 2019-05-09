@@ -1,6 +1,7 @@
 package com.example.plan.ui.activity;
 
 import android.arch.lifecycle.Observer;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -14,11 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.plan.R;
+import com.example.plan.databinding.ActivityMainBinding;
 import com.example.plan.presenter.MainController;
+import com.example.plan.ui.dialog.ChoosePlanDialog;
 import com.example.plan.ui.fragment.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,44 +32,57 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private FloatingActionButton mAddTask;
     private BottomSheetBehavior mAddListBehavior;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initController();
         observerStateDrawer();
         initDrawerLayout();
         initView();
         initBottomViewAddTask();
-
+        handleActionFromBottomSheet();
     }
 
-    private void observerStateDrawer(){
+    private void observerStateDrawer() {
         mController.getStateDrawer().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
-                if(aBoolean){
+                if (aBoolean) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                 }
             }
         });
     }
 
-    private void initView(){
+    private void handleActionFromBottomSheet() {
+        Button btnAddPlan = findViewById(R.id.btn_sheet_add_list);
+        btnAddPlan.setOnClickListener(mBottomSheetClick);
+        Button btnRepeat = findViewById(R.id.btn_sheet_repeat);
+        btnRepeat.setOnClickListener(mBottomSheetClick);
+        Button btnRemind = findViewById(R.id.btn_sheet_remind);
+        btnRemind.setOnClickListener(mBottomSheetClick);
+    }
+
+
+    private void initView() {
+
         //Floating button
         mAddTask = findViewById(R.id.fab);
         mAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showBottomAddTask();
+                showBottomAddTask(true);
             }
         });
 
 
     }
 
-    private void initBottomViewAddTask(){
+    private void initBottomViewAddTask() {
         // BottomSheet AddTask
         LinearLayout llBottomSheet = findViewById(R.id.bottom_sheet);
 // init the bottom sheet behavior
@@ -80,13 +97,15 @@ public class MainActivity extends AppCompatActivity {
         mAddListBehavior.setPeekHeight(0);
 
 // set hideable or not
-        mAddListBehavior.setHideable(true);
+        showBottomAddTask(false);
 
 // set callback for changes
         mAddListBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                Log.d("dong.nd1", "onStateChanged");
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    showBottomAddTask(false);
+                }
             }
 
             @Override
@@ -113,7 +132,41 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.navigation_container, fragment).commit();
     }
 
-    private void showBottomAddTask(){
-        mAddListBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    private void showBottomAddTask(boolean value) {
+        if (value) {
+            mAddListBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            mBinding.containerViewId.setShowFloatBtn(false);
+        } else {
+            mAddListBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mBinding.containerViewId.setShowFloatBtn(true);
+        }
+
     }
+
+    View.OnClickListener mBottomSheetClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_sheet_add_list:
+                    showDialogChoosePlan(v);
+                    break;
+                case R.id.btn_sheet_repeat:
+                    break;
+                case R.id.btn_sheet_remind:
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void showDialogChoosePlan(View v){
+        ChoosePlanDialog dialog = new ChoosePlanDialog();
+        Bundle bundle = new Bundle();
+        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_X, v.getX());
+        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_Y, v.getY());
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), "Choose Plan");
+    }
+
 }

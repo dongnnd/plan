@@ -4,6 +4,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!--Navigation Drawer-->
+    <string name="nav_today">To day</string>
+    <string name="nav_up_comming">Up coming</string>
+    <string name="nav_important">Important</string>
+    <string name="nav_up_history">History</string>
+
     <!--Add plan dialog-->
     <string name="add_plan_title">Add Plan</string>
     <string name="add_plan_btn_done">DONE</string>

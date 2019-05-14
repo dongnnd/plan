@@ -12,20 +12,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.plan.R;
 import com.example.plan.databinding.ActivityMainBinding;
 import com.example.plan.presenter.MainController;
-import com.example.plan.ui.dialog.ChoosePlanDialog;
+import com.example.plan.ui.dialog.ChooseItemDialog;
 import com.example.plan.ui.fragment.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity {
+
 
     private MainController mController;
     private DrawerLayout mDrawerLayout;
@@ -45,7 +44,14 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initBottomViewAddTask();
         handleActionFromBottomSheet();
+        setSoftInputMode();
+
     }
+
+    private void setSoftInputMode(){
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
 
     private void observerStateDrawer() {
         mController.getStateDrawer().observe(this, new Observer<Boolean>() {
@@ -110,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                Log.d("dong.nd1", "on Slide");
             }
         });
     }
@@ -161,11 +166,12 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void showDialogChoosePlan(View v){
-        ChoosePlanDialog dialog = new ChoosePlanDialog();
+        ChooseItemDialog dialog = new ChooseItemDialog();
         Bundle bundle = new Bundle();
-        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_X, v.getX());
-        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_Y, v.getY());
+        bundle.putFloat(ChooseItemDialog.POSITION_SHOW_DIALOG_X, v.getX());
+        bundle.putFloat(ChooseItemDialog.POSITION_SHOW_DIALOG_Y, v.getY());
         dialog.setArguments(bundle);
+        dialog.setController(mController);
         dialog.show(getSupportFragmentManager(), "Choose Plan");
     }
 

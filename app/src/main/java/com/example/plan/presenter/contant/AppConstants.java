@@ -29,4 +29,10 @@ public class AppConstants {
         public static final int REPEAT_SATURDAY = 0;
         public static final int REPEAT_SUNDAY = 0;
     }
+
+    public class DefaultListPlanID{
+        public static final int PLAN_TODAY = -1;
+        public static final int PLAN_HISTORY = -2;
+        public static final int PLAN_IMPORTANT = -3;
+    }
 }

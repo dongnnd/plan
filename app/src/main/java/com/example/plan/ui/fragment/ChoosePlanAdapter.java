@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.plan.R;
+import com.example.plan.ui.dialog.IChooseItem;
 import com.example.plan.ui.storage.model.ListPlan;
 
 import java.util.List;
@@ -17,6 +18,11 @@ public class ChoosePlanAdapter extends RecyclerView.Adapter<ChoosePlanAdapter.Ch
 
     private Context mContext;
     private List<ListPlan> mData;
+    private IChooseItem mClickCallBack;
+
+    public void setClickCallBack(IChooseItem callBack){
+        mClickCallBack = callBack;
+    }
 
     public ChoosePlanAdapter(Context context){
         mContext = context;
@@ -30,8 +36,14 @@ public class ChoosePlanAdapter extends RecyclerView.Adapter<ChoosePlanAdapter.Ch
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChooseListHolder chooseListHolder, int i) {
+    public void onBindViewHolder(@NonNull ChooseListHolder chooseListHolder,final int i) {
         ListPlan item = mData.get(i);
+        chooseListHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickCallBack.onItemClick(mData.get(i));
+            }
+        });
         chooseListHolder.mName.setText(item.getmName());
     }
 
@@ -47,5 +59,10 @@ public class ChoosePlanAdapter extends RecyclerView.Adapter<ChoosePlanAdapter.Ch
             super(v);
             mName = v.findViewById(R.id.choose_item_name);
         }
+    }
+
+    public void updateData(List<ListPlan> data){
+        mData = data;
+        notifyDataSetChanged();
     }
 }

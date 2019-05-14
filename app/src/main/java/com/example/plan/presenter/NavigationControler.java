@@ -27,7 +27,6 @@ public class NavigationControler extends AbsController implements IDataCallback<
 
     @Override
     public void dataCallBack(List<ListPlan> data) {
-        Log.d("dong.nd1", "Size: " + data.size());
         mListData.postValue(data);
     }
 

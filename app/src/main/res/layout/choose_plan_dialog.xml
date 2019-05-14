@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background">
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="5dp">
+        <LinearLayout
+            android:id="@+id/choose_plan_default_today"
+            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_today"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/nav_today"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:text="To day"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="5dp">
+        <LinearLayout
+            android:id="@+id/choose_plan_default_important"
+            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_today"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/nav_important"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:text="Important"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <View
+        android:id="@+id/nav_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/nav_important" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/choose_list_plan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

@@ -32,7 +32,6 @@ public class FileListController extends AbsController implements IDataCallback<T
 
     @Override
     public void dataCallBack(List<TaskItem> data) {
-        Log.d("dong.nd1", "new use case: " + data.size());
     }
 
     @Override

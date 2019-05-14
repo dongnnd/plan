@@ -15,23 +15,24 @@ import com.example.plan.ui.storage.model.ListPlan;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.NavHolder>  {
+public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.NavHolder> {
 
     private List<ListPlan> mData = new ArrayList<>();
     private Context mContext;
     private LayoutInflater mInflate;
     private IItemAction mActionCallBack;
 
-    public interface IItemAction{
+    public interface IItemAction {
         void itemClick(ListPlan item);
+
         void itemLongClick();
     }
 
-    public void setItemActionCallBack(IItemAction itemAction){
+    public void setItemActionCallBack(IItemAction itemAction) {
         mActionCallBack = itemAction;
     }
 
-    public NavigationAdapter(Context context){
+    public NavigationAdapter(Context context) {
         mContext = context;
         mInflate = LayoutInflater.from(mContext);
     }
@@ -39,7 +40,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     @NonNull
     @Override
-    public NavHolder onCreateViewHolder(@NonNull ViewGroup viewGroup,final int i) {
+    public NavHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         View view = mInflate.inflate(R.layout.nav_item, viewGroup, false);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,12 +53,11 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
 
     @Override
-    public void onBindViewHolder(@NonNull NavHolder navHolder,final int i) {
+    public void onBindViewHolder(@NonNull NavHolder navHolder, final int i) {
         ListPlan item = mData.get(i);
         navHolder.mName.setText(item.getmName());
         navHolder.mCount.setText("1");
     }
-
 
 
     @Override
@@ -82,8 +82,8 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
         }
     }
 
-    private void addEmptyItem(){
-        for(int i = 0; i < 5; i++){
+    private void addEmptyItem() {
+        for (int i = 0; i < 5; i++) {
             mData.add(new ListPlan());
         }
     }

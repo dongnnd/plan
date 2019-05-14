@@ -18,6 +18,11 @@ public class ListPlan {
 
     }
 
+    public ListPlan(int id, String name){
+        mId = id;
+        mName = name;
+    }
+
     public int getmId() {
         return mId;
     }

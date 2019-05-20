@@ -7,4 +7,8 @@
 
     <!--Addlist dialog-->
     <dimen name="add_list_text_size_dialog">17sp</dimen>
+
+    <!--Default-->
+    <dimen name="padding_text_default">10dp</dimen>
+    <dimen name="margin_view_default">10dp</dimen>
 </resources>

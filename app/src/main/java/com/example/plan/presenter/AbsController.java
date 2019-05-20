@@ -4,13 +4,16 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.content.Context;
 
+import com.example.plan.entities.Repeat;
 import com.example.plan.presenter.contant.DataLoader;
 import com.example.plan.ui.injection.RepositoryFactory;
+import com.example.plan.ui.storage.model.ListPlan;
 import com.example.plan.ui.threadexcutor.LoadDataThread;
 import com.example.plan.usecase.IRepository;
 import com.example.plan.usecase.IThreadExecutor;
 
 import java.util.HashMap;
+import java.util.Timer;
 
 public abstract class AbsController extends AndroidViewModel {
 
@@ -38,6 +41,12 @@ public abstract class AbsController extends AndroidViewModel {
             mThread = thread;
         }
 
+    }
+
+    public class ParaForNewTask{
+        public ListPlan mListPlan;
+        public Timer mTimer;
+        public Repeat mRepeat;
     }
 
     /*private Dao getDaoType(int dataType) {

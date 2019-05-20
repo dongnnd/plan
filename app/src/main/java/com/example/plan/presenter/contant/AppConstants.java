@@ -12,6 +12,7 @@ public class AppConstants {
     public class RepeatType {
 
         // repeat type
+/*
         public static final int DAY_LY = 0;
         public static final int WEEK_DAYS = 1;
         public static final int WEEK_LY = 2;
@@ -20,6 +21,7 @@ public class AppConstants {
         public static final int CUSTOM = 5;
 
         // repeat type with custom
+*/
 
         public static final int REPEAT_MONDAY = 0;
         public static final int REPEAT_TUEDAY = 0;

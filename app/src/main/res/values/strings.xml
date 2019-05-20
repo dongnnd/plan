@@ -25,4 +25,12 @@
     <string name="add_to_list">ADD TO LIST...</string>
     <string name="remind_me">REMIND ME</string>
     <string name="repeat_me">REPEAT_ME</string>
+
+
+    <!--Choose date time dialog-->
+    <string name="choose_time_dialog_title">Choose time</string>
+    <string name="choose_date_dialog_title">Choose date</string>
+    <string name="choose_date_time_cancel">CANCEL</string>
+    <string name="choose_date_time_done">DONE</string>
+
 </resources>

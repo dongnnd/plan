@@ -1,5 +1,6 @@
 package com.example.plan.ui.activity;
 
+import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -12,16 +13,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 
 import com.example.plan.R;
 import com.example.plan.databinding.ActivityMainBinding;
 import com.example.plan.presenter.MainController;
 import com.example.plan.ui.dialog.ChooseItemDialog;
+import com.example.plan.ui.dialog.ChooseDateTimeDialog;
 import com.example.plan.ui.fragment.NavigationFragment;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -158,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.btn_sheet_repeat:
                     break;
                 case R.id.btn_sheet_remind:
+                    showTimePickerDialog();
                     break;
                 default:
                     break;
@@ -175,4 +182,22 @@ public class MainActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "Choose Plan");
     }
 
+
+    private void showTimePickerDialog(){
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        /*TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                Log.d("dong.nd1", selectedHour +" "+ selectedMinute);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();*/
+
+        ChooseDateTimeDialog dialog = new ChooseDateTimeDialog();
+        dialog.show(getSupportFragmentManager(), "ChooseDateTime");
+    }
 }

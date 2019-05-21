@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import com.example.plan.R;
 import com.example.plan.databinding.ActivityMainBinding;
 import com.example.plan.presenter.MainController;
+import com.example.plan.ui.dialog.ChooseDayRepeat;
 import com.example.plan.ui.dialog.ChooseItemDialog;
 import com.example.plan.ui.dialog.ChooseDateTimeDialog;
 import com.example.plan.ui.fragment.NavigationFragment;
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     showDialogChoosePlan(v);
                     break;
                 case R.id.btn_sheet_repeat:
+                    showRepeatDialog();
                     break;
                 case R.id.btn_sheet_remind:
                     showTimePickerDialog();
@@ -171,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void showRepeatDialog(){
+        ChooseDayRepeat dayRepeat = new ChooseDayRepeat();
+        dayRepeat.show(getSupportFragmentManager(), "D");
+    }
 
     private void showDialogChoosePlan(View v){
         ChooseItemDialog dialog = new ChooseItemDialog();
@@ -198,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         mTimePicker.show();*/
 
         ChooseDateTimeDialog dialog = new ChooseDateTimeDialog();
+        dialog.setArguments(mController);
         dialog.show(getSupportFragmentManager(), "ChooseDateTime");
     }
 }

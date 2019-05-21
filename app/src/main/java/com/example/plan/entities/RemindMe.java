@@ -15,6 +15,10 @@ public class RemindMe {
         mSecond = second;
     }
 
+    public RemindMe(){
+
+    }
+
     public long getmDate() {
         return mDate;
     }

@@ -7,6 +7,10 @@ public class Repeat {
         mRepeatType = repeatType;
     }
 
+    public Repeat(){
+
+    }
+
     public int getmRepeatType() {
         return mRepeatType;
     }

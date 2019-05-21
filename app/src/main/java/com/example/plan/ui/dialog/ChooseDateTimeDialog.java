@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.plan.R;
+import com.example.plan.presenter.MainController;
 import com.example.plan.ui.fragment.ChooseDateFragment;
 import com.example.plan.ui.fragment.ChooseTimeFragment;
 import com.example.plan.ui.fragment.TabChooseDateTimeAdapter;
@@ -29,11 +30,16 @@ public class ChooseDateTimeDialog extends DialogFragment implements View.OnClick
     private ViewPager mViewPager;
     private TextView tvDone;
     private TextView tvCancel;
+    private MainController mController;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    public void setArguments(MainController controller) {
+        mController = controller;
     }
 
     @Nullable
@@ -79,8 +85,12 @@ public class ChooseDateTimeDialog extends DialogFragment implements View.OnClick
         mTablayout = view.findViewById(R.id.tabLayout);
         mViewPager = view.findViewById(R.id.viewPager);
         mAdapter = new TabChooseDateTimeAdapter(getChildFragmentManager());
-        mAdapter.addFragment(new ChooseTimeFragment(), mContext.getString(R.string.choose_time_dialog_title));
-        mAdapter.addFragment(new ChooseDateFragment(), mContext.getString(R.string.choose_date_dialog_title));
+        ChooseTimeFragment timeDialog = new ChooseTimeFragment();
+        timeDialog.setArguments(mController);
+        ChooseDateFragment dateDialog = new ChooseDateFragment();
+        dateDialog.setArguments(mController);
+        mAdapter.addFragment(timeDialog, mContext.getString(R.string.choose_time_dialog_title));
+        mAdapter.addFragment(dateDialog, mContext.getString(R.string.choose_date_dialog_title));
         mViewPager.setAdapter(mAdapter);
         mTablayout.setupWithViewPager(mViewPager);
 
@@ -94,6 +104,7 @@ public class ChooseDateTimeDialog extends DialogFragment implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_done:
+                mController.addNewTaskToDB();
                 break;
             case R.id.tv_cancel:
                 dismiss();

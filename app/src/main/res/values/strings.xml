@@ -33,4 +33,7 @@
     <string name="choose_date_time_cancel">CANCEL</string>
     <string name="choose_date_time_done">DONE</string>
 
+    <!--Choose date repeat-->
+    <string name="choose_day_repeat_title">Choose Day Repeat</string>
+
 </resources>

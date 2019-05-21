@@ -12,11 +12,19 @@ import android.view.ViewGroup;
 import android.widget.TimePicker;
 
 import com.example.plan.R;
+import com.example.plan.presenter.MainController;
+
+import java.util.Calendar;
 
 
 public class ChooseTimeFragment extends Fragment {
 
     private TimePicker mTimePicker;
+    private MainController mController;
+
+    public void setArguments(MainController controller) {
+        mController = controller;
+    }
 
     @Nullable
     @Override
@@ -28,11 +36,20 @@ public class ChooseTimeFragment extends Fragment {
 
     private void handleTimeSet(View view){
         mTimePicker = view.findViewById(R.id.time_picker);
+        //Default value for time
+        Calendar mcurrentTime = Calendar.getInstance();
+        setTime(mcurrentTime.get(Calendar.HOUR_OF_DAY),mcurrentTime.get(Calendar.MINUTE));
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                Log.d("dong.nd1", "hour "+ hourOfDay + "minute "+ minute);
+                setTime(hourOfDay, minute);
             }
         });
+    }
+
+    private void setTime(int hour, int minute){
+        mController.getCurrentDataNewTask().getmRemindMe().setmHour(hour);
+        mController.getCurrentDataNewTask().getmRemindMe().setmMinute(minute);
+        mController.getCurrentDataNewTask().getmRemindMe().setmSecond(00);
     }
 }

@@ -13,6 +13,10 @@ public class Task {
         mNote = note;
     }
 
+    public Task(){
+
+    }
+
     public String getmName() {
         return mName;
     }

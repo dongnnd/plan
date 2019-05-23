@@ -35,5 +35,15 @@
 
     <!--Choose date repeat-->
     <string name="choose_day_repeat_title">Choose Day Repeat</string>
+    <string name="choose_day_none">NONE</string>
+    <string name="choose_day_monday">Mon</string>
+    <string name="choose_day_tueday">Tue</string>
+    <string name="choose_day_wednesday">Wed</string>
+    <string name="choose_day_thursday">Thurs</string>
+    <string name="choose_day_friday">Fri</string>
+    <string name="choose_day_saturday">Sat</string>
+    <string name="choose_day_sunday">Sun</string>
+
+
 
 </resources>

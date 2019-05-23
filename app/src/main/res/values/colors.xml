@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#3399FF</color>
 
 
     <!--Add ListPlan dialog-->
@@ -10,4 +10,8 @@
 
     <!--Divider-->
     <color name="color_divider">#BBBBBB</color>
+
+    <!--Selected-->
+    <color name="color_choose_item">#3399FF</color>
+    <color name="color_not_choose_item">#BBBBBB</color>
 </resources>

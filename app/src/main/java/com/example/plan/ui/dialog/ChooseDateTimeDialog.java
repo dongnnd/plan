@@ -81,7 +81,7 @@ public class ChooseDateTimeDialog extends DialogFragment implements View.OnClick
         return mDialog;
     }*/
 
-    private void initView(View view){
+    private void initView(View view) {
         mTablayout = view.findViewById(R.id.tabLayout);
         mViewPager = view.findViewById(R.id.viewPager);
         mAdapter = new TabChooseDateTimeAdapter(getChildFragmentManager());
@@ -102,9 +102,10 @@ public class ChooseDateTimeDialog extends DialogFragment implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_done:
-                mController.addNewTaskToDB();
+                mController.getCurrentDataNewTask().updateBtnRemind();
+                dismiss();
                 break;
             case R.id.tv_cancel:
                 dismiss();

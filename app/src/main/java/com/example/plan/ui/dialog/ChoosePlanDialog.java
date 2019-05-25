@@ -28,7 +28,7 @@ import java.util.List;
 
 import static android.view.ViewGroup.*;
 
-public class ChooseItemDialog extends DialogFragment implements IChooseItem<ListPlan> {
+public class ChoosePlanDialog extends DialogFragment implements IChooseItem<ListPlan> {
 
     public static final String POSITION_SHOW_DIALOG_X = "pos_x";
     public static final String POSITION_SHOW_DIALOG_Y = "pos_y";
@@ -116,13 +116,13 @@ public class ChooseItemDialog extends DialogFragment implements IChooseItem<List
             @Override
             public void onChanged(@Nullable List<ListPlan> listPlans) {
                 mAdapter.updateData(listPlans);
-                Log.d("dong.nd1", listPlans.size() + " Size");
             }
         });
     }
 
     @Override
     public void onItemClick(ListPlan item) {
-
+        mController.getCurrentDataNewTask().setmPlan(item);
+        dismiss();
     }
 }

@@ -89,7 +89,9 @@ public class ChooseDayRepeat extends DialogFragment {
 
     private void setDataForMainController() {
         Repeat repeat = new Repeat();
+        String strForButton = "";
         if (mSelected[0] == 1) {
+            strForButton += "None";
             repeat.setmNone(1);
             repeat.setmMon(0);
             repeat.setmTue(0);
@@ -107,30 +109,38 @@ public class ChooseDayRepeat extends DialogFragment {
                         break;
                     case 1:
                         repeat.setmMon(value);
+                        strForButton += value == 1 ? "Mon, " : "";
                         break;
                     case 2:
                         repeat.setmTue(value);
+                        strForButton += value == 1 ? "Tue, " : "";
                         break;
                     case 3:
                         repeat.setmWed(value);
+                        strForButton += value == 1 ? "Wed, " : "";
                         break;
                     case 4:
                         repeat.setmThurs(value);
+                        strForButton += value == 1 ? "Thu, " : "";
                         break;
                     case 5:
                         repeat.setmFri(value);
+                        strForButton += value == 1 ? "Fri, " : "";
                         break;
                     case 6:
                         repeat.setSat(value);
+                        strForButton += value == 1 ? "Sat, " : "";
                         break;
                     case 7:
                         repeat.setSun(value);
+                        strForButton += value == 1 ? "Sun, " : "";
                         break;
                 }
             }
+            strForButton = strForButton.substring(0, strForButton.length() -2);
         }
 
-        mController.getCurrentDataNewTask().setmRepeat(repeat);
+        mController.getCurrentDataNewTask().setmRepeat(repeat, strForButton);
 
     }
 

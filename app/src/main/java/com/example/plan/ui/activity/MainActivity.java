@@ -1,6 +1,5 @@
 package com.example.plan.ui.activity;
 
-import android.app.TimePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -13,18 +12,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TimePicker;
 
 import com.example.plan.R;
 import com.example.plan.databinding.ActivityMainBinding;
 import com.example.plan.presenter.MainController;
 import com.example.plan.ui.dialog.ChooseDayRepeat;
-import com.example.plan.ui.dialog.ChooseItemDialog;
+import com.example.plan.ui.dialog.ChoosePlanDialog;
 import com.example.plan.ui.dialog.ChooseDateTimeDialog;
 import com.example.plan.ui.fragment.NavigationFragment;
 
@@ -41,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mAddTask;
     private BottomSheetBehavior mAddListBehavior;
     private ActivityMainBinding mBinding;
+
+    private Button mChoosePlan;
+    private Button mChooseDateTime;
+    private Button mChooseRepeat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +75,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleActionFromBottomSheet() {
-        Button btnAddPlan = findViewById(R.id.btn_sheet_add_list);
-        btnAddPlan.setOnClickListener(mBottomSheetClick);
-        Button btnRepeat = findViewById(R.id.btn_sheet_repeat);
-        btnRepeat.setOnClickListener(mBottomSheetClick);
-        Button btnRemind = findViewById(R.id.btn_sheet_remind);
-        btnRemind.setOnClickListener(mBottomSheetClick);
+        mChoosePlan = findViewById(R.id.btn_sheet_add_list);
+        mChoosePlan.setOnClickListener(mBottomSheetClick);
+        mChooseDateTime = findViewById(R.id.btn_sheet_remind);
+        mChooseDateTime.setOnClickListener(mBottomSheetClick);
+        mChooseRepeat = findViewById(R.id.btn_sheet_repeat);
+        mChooseRepeat.setOnClickListener(mBottomSheetClick);
+        observerChoosePlan();
+        observerChooseDateTime();
+        observerChooseRepeat();
     }
 
+    private void observerChoosePlan(){
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                mChoosePlan.setText(s);
+            }
+        };
+        mController.getmChoosePlan().observe(this, observer);
+    }
+
+    private void observerChooseDateTime(){
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                mChooseDateTime.setText(s);
+            }
+        };
+        mController.getmChooseDateTime().observe(this, observer);
+    }
+
+    private void observerChooseRepeat(){
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                mChooseRepeat.setText(s);
+            }
+        };
+        mController.getmChooseRepeat().observe(this, observer);
+    }
 
     private void initView() {
 
@@ -183,10 +216,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDialogChoosePlan(View v){
-        ChooseItemDialog dialog = new ChooseItemDialog();
+        ChoosePlanDialog dialog = new ChoosePlanDialog();
         Bundle bundle = new Bundle();
-        bundle.putFloat(ChooseItemDialog.POSITION_SHOW_DIALOG_X, v.getX());
-        bundle.putFloat(ChooseItemDialog.POSITION_SHOW_DIALOG_Y, v.getY());
+        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_X, v.getX());
+        bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_Y, v.getY());
         dialog.setArguments(bundle);
         dialog.setController(mController);
         dialog.show(getSupportFragmentManager(), CHOOSE_PLAN_DIALOG_TAG);

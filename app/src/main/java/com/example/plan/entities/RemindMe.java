@@ -1,6 +1,5 @@
 package com.example.plan.entities;
 
-import java.util.Date;
 
 public class RemindMe {
     public long mDate;

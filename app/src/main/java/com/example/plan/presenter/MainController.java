@@ -14,12 +14,18 @@ import com.example.plan.ui.storage.model.ListPlan;
 import com.example.plan.usecase.IDataCallback;
 import com.example.plan.usecase.LoadListPlan;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MainController extends AbsController implements IDataCallback<ListPlan> {
     private MutableLiveData<Boolean> mStateDrawer = new MutableLiveData<>();
     private MutableLiveData<List<ListPlan>> mData = new MutableLiveData<>();
     private DataForNewTask mDataForNewTak = new DataForNewTask();
+
+    private MutableLiveData<String> mChoosePlan = new MutableLiveData<>();
+    private MutableLiveData<String> mChooseDateTime = new MutableLiveData<>();
+    private MutableLiveData<String> mChooseRepeat = new MutableLiveData<>();
 
     public MainController(Application application){
         super(application);
@@ -54,6 +60,18 @@ public class MainController extends AbsController implements IDataCallback<ListP
 
     }
 
+    public MutableLiveData<String> getmChoosePlan() {
+        return mChoosePlan;
+    }
+
+    public MutableLiveData<String> getmChooseDateTime() {
+        return mChooseDateTime;
+    }
+
+    public MutableLiveData<String> getmChooseRepeat() {
+        return mChooseRepeat;
+    }
+
     public LiveData<List<ListPlan>> getListPlan(){
         return mData;
     }
@@ -67,7 +85,7 @@ public class MainController extends AbsController implements IDataCallback<ListP
     }
 
     public class DataForNewTask{
-        private Task mTask;
+        private ListPlan mPlan;
         private Repeat mRepeat;
         private RemindMe mRemindMe;
 
@@ -76,25 +94,27 @@ public class MainController extends AbsController implements IDataCallback<ListP
         }
 
         public void reset(){
-            mTask = new Task();
+            mPlan = new ListPlan();
             mRemindMe = new RemindMe();
             mRepeat = new Repeat();
         }
 
-        public Task getmTask() {
-            return mTask;
+        public ListPlan getmPlan() {
+            return mPlan;
         }
 
-        public void setmTask(Task mTask) {
-            this.mTask = mTask;
+        public void setmPlan(ListPlan mPlan) {
+            this.mPlan = mPlan;
+            mChoosePlan.setValue(mPlan.mName);
         }
 
         public Repeat getmRepeat() {
             return mRepeat;
         }
 
-        public void setmRepeat(Repeat mRepeat) {
+        public void setmRepeat(Repeat mRepeat, String str) {
             this.mRepeat = mRepeat;
+            mChooseRepeat.setValue(str);
         }
 
         public RemindMe getmRemindMe() {
@@ -104,5 +124,20 @@ public class MainController extends AbsController implements IDataCallback<ListP
         public void setmRemindMe(RemindMe mRemindMe) {
             this.mRemindMe = mRemindMe;
         }
+
+        public void updateBtnRemind(){
+            mChooseDateTime.setValue(getStringForBtnRemind());
+        }
+
+        private String getStringForBtnRemind(){
+            String result = "";
+            String pattern = "MM/dd/yyyy";
+            DateFormat df = new SimpleDateFormat(pattern);
+            String date = df.format(mRemindMe.getmDate());
+            result += mRemindMe.getmHour() + ":" +mRemindMe.getmMinute() + "\n";
+            result += date;
+            return result;
+        }
     }
+
 }

@@ -17,8 +17,8 @@ public class RepeatItem extends Repeat {
 
     public int mRepeatId;
 
-    public RepeatItem(int repeatType){
-        super(repeatType);
+    public RepeatItem(int none){
+        super(none);
     }
 
     public int getmRepeatId() {

@@ -24,12 +24,12 @@ public class AppConstants {
 */
 
         public static final int REPEAT_MONDAY = 0;
-        public static final int REPEAT_TUEDAY = 0;
-        public static final int REPEAT_WEDNESDAY = 0;
-        public static final int REPEAT_THURDAY = 0;
-        public static final int REPEAT_FRIDAY = 0;
-        public static final int REPEAT_SATURDAY = 0;
-        public static final int REPEAT_SUNDAY = 0;
+        public static final int REPEAT_TUEDAY = 1;
+        public static final int REPEAT_WEDNESDAY = 2;
+        public static final int REPEAT_THURDAY = 3;
+        public static final int REPEAT_FRIDAY = 4;
+        public static final int REPEAT_SATURDAY = 5;
+        public static final int REPEAT_SUNDAY = 6;
     }
 
     public class DefaultListPlanID{

@@ -31,7 +31,9 @@ import com.example.plan.ui.fragment.NavigationFragment;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String CHOOSE_PLAN_DIALOG_TAG = "choose_plan";
+    public static final String CHOOSE_DATE_TIME_TAG = "choose_date_time";
+    public static final String CHOOSE_REPEAT_DAY_TAG = "choose_repeat_day";
 
     private MainController mController;
     private DrawerLayout mDrawerLayout;
@@ -176,7 +178,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showRepeatDialog(){
         ChooseDayRepeat dayRepeat = new ChooseDayRepeat();
-        dayRepeat.show(getSupportFragmentManager(), "D");
+        dayRepeat.setArguments(mController);
+        dayRepeat.show(getSupportFragmentManager(), CHOOSE_REPEAT_DAY_TAG);
     }
 
     private void showDialogChoosePlan(View v){
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         bundle.putFloat(ChooseItemDialog.POSITION_SHOW_DIALOG_Y, v.getY());
         dialog.setArguments(bundle);
         dialog.setController(mController);
-        dialog.show(getSupportFragmentManager(), "Choose Plan");
+        dialog.show(getSupportFragmentManager(), CHOOSE_PLAN_DIALOG_TAG);
     }
 
 
@@ -206,6 +209,6 @@ public class MainActivity extends AppCompatActivity {
 
         ChooseDateTimeDialog dialog = new ChooseDateTimeDialog();
         dialog.setArguments(mController);
-        dialog.show(getSupportFragmentManager(), "ChooseDateTime");
+        dialog.show(getSupportFragmentManager(), CHOOSE_DATE_TIME_TAG);
     }
 }

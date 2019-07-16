@@ -12,9 +12,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.plan.R;
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mChoosePlan;
     private Button mChooseDateTime;
     private Button mChooseRepeat;
+    private ImageView mSubmitTask;
+    private EditText mNameNewTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +88,36 @@ public class MainActivity extends AppCompatActivity {
         mChooseDateTime.setOnClickListener(mBottomSheetClick);
         mChooseRepeat = findViewById(R.id.btn_sheet_repeat);
         mChooseRepeat.setOnClickListener(mBottomSheetClick);
+        mSubmitTask = findViewById(R.id.btn_add_task);
+        mSubmitTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("dong.nd1", "AA");
+            }
+        });
+        mNameNewTask = findViewById(R.id.edt_add_task);
+        mNameNewTask.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.equals("") || s.length() == 0){
+                    mSubmitTask.setImageResource(R.drawable.ic_add_task_disable);
+                    mSubmitTask.setClickable(false);
+                }else{
+                    mSubmitTask.setImageResource(R.drawable.ic_add_task);
+                    mSubmitTask.setClickable(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         observerChoosePlan();
         observerChooseDateTime();
         observerChooseRepeat();

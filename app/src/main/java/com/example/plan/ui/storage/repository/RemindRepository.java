@@ -1,25 +1,24 @@
 package com.example.plan.ui.storage.repository;
 
-import com.example.plan.entities.RemindMe;
 import com.example.plan.ui.storage.dao.RemindDao;
 import com.example.plan.ui.storage.model.RemindItem;
 
 import java.util.List;
 
-public class RemindRepository extends AbsRepository{
+public class RemindRepository extends AbsRepository {
 
     public static RemindRepository mInstance;
     private RemindDao mRemindDao;
 
-    public static RemindRepository getInstance(RemindDao remindDao){
-        if(mInstance == null){
+    public static RemindRepository getInstance(RemindDao remindDao) {
+        if (mInstance == null) {
             mInstance = new RemindRepository(remindDao);
         }
 
         return mInstance;
     }
 
-    public RemindRepository(RemindDao remindDao){
+    public RemindRepository(RemindDao remindDao) {
         mRemindDao = remindDao;
     }
 
@@ -39,7 +38,7 @@ public class RemindRepository extends AbsRepository{
     }
 
     @Override
-    public void deleteItem(Object item) {
-
+    public long deleteItem(Object item) {
+        return -1;
     }
 }

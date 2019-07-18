@@ -43,7 +43,7 @@ public class TaskRepository extends AbsRepository{
     }
 
     @Override
-    public void deleteItem(Object item) {
-
+    public long deleteItem(Object item) {
+        return -1;
     }
 }

@@ -23,5 +23,5 @@ public interface ListPlanDao {
     ListPlan getDuplicateListPlan(String name);
 
     @Delete
-    void deleteItem(ListPlan item);
+    int deleteItem(ListPlan item);
 }

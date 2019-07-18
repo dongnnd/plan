@@ -10,5 +10,5 @@ public interface IRepository<T> {
 
     long insertItem(T item);
 
-    void deleteItem(T item);
+    long deleteItem(T item);
 }

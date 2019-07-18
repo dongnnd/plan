@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -47,12 +48,11 @@ public class FileListTaskAdapter extends RecyclerView.Adapter<FileListTaskAdapte
 
     public void updateData(List<TaskItem> data){
         mData = data;
-
         notifyDataSetChanged();
     }
 
     public class FileListViewHolder extends RecyclerView.ViewHolder{
-        private RadioButton mRadio;
+        private CheckBox mRadio;
         private TextView mName;
 
         public FileListViewHolder(View view){

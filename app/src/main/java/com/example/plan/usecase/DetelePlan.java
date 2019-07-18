@@ -25,8 +25,8 @@ public class DetelePlan implements IInteractor<ListPlan>{
         mThread.run(new Runnable() {
             @Override
             public void run() {
-                mRepository.deleteItem(mPlan);
-                onLoadDataFinish(mRepository.loadListItem());
+                long result = mRepository.deleteItem(mPlan);
+                mCallBack.executeSuccess(result);
             }
         });
     }

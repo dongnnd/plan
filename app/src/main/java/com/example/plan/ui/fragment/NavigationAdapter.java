@@ -84,7 +84,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     public void updateDataChange(List<ListPlan> data) {
         mData = data;
-        if (mData.size() > 2) {
+        if (mData.size() > 1) {
             mData.remove(0);
             mData.remove(0);
         }

@@ -50,8 +50,8 @@ public class ListPlanRepository extends AbsRepository {
     }
 
     @Override
-    public void deleteItem(Object item) {
-        mListPlanDao.deleteItem((ListPlan)item);
+    public long deleteItem(Object item) {
+        return mListPlanDao.deleteItem((ListPlan)item);
     }
 }
 

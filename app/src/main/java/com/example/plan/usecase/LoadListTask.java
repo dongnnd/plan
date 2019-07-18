@@ -1,6 +1,5 @@
 package com.example.plan.usecase;
 
-import com.example.plan.entities.Task;
 import com.example.plan.ui.storage.model.TaskItem;
 
 import java.util.List;

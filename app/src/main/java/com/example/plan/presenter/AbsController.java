@@ -4,7 +4,9 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.content.Context;
 
+import com.example.plan.entities.RemindMe;
 import com.example.plan.entities.Repeat;
+import com.example.plan.entities.Task;
 import com.example.plan.presenter.contant.DataLoader;
 import com.example.plan.ui.injection.RepositoryFactory;
 import com.example.plan.ui.storage.model.ListPlan;
@@ -44,9 +46,15 @@ public abstract class AbsController extends AndroidViewModel {
     }
 
     public class ParaForNewTask{
-        public ListPlan mListPlan;
-        public Timer mTimer;
+        public int mIdListPlan;
+        public Task mTask;
+        public RemindMe mRemind;
         public Repeat mRepeat;
+
+//        public ParaForNewTask(IRepository repository, IThreadExecutor thread, Task task, RemindMe remind, Repeat repeat){
+//            mRepository = repository;
+//            mThread = thread;
+//        }
     }
 
     /*private Dao getDaoType(int dataType) {

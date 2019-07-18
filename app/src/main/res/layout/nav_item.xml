@@ -3,29 +3,44 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="40dp"
     android:orientation="horizontal"
-    android:weightSum="5">
+    android:weightSum="6">
 
+    <LinearLayout
+        android:id="@+id/nav_item_container"
+        android:layout_width="0dp"
+        android:layout_weight="5"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="5">
+        <ImageView
+            android:id="@+id/nav_item_icon"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:scaleType="center"
+            android:src="@drawable/ic_list_plan"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/nav_item_name"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/nav_item_count"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2"
+            android:layout_height="match_parent" />
+    </LinearLayout>
     <ImageView
-        android:id="@+id/nav_item_icon"
+        android:id="@+id/nav_item_delete"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:scaleType="center"
-        android:src="@drawable/ic_list_plan"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/nav_item_name"
-        android:layout_width="0dp"
-        android:layout_weight="3"
-        android:gravity="center_vertical"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/nav_item_count"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="2"
-        android:layout_height="match_parent" />
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete"/>
 
 </LinearLayout>

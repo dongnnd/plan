@@ -48,4 +48,10 @@ public class ListPlanRepository extends AbsRepository {
     public List loadListItemWithId(int id) {
         return null;
     }
+
+    @Override
+    public void deleteItem(Object item) {
+        mListPlanDao.deleteItem((ListPlan)item);
+    }
 }
+

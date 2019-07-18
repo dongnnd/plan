@@ -9,23 +9,31 @@ import com.example.plan.entities.Repeat;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "repeat", foreignKeys = @ForeignKey(entity = TaskItem.class, parentColumns = "mId", childColumns =
-        "mRepeatId", onDelete = CASCADE))
+        "mTaskId", onDelete = CASCADE))
 public class RepeatItem extends Repeat {
 
     @PrimaryKey(autoGenerate = true)
     public int mId;
 
-    public int mRepeatId;
+    public int mTaskId;
 
     public RepeatItem(int none){
         super(none);
     }
 
-    public int getmRepeatId() {
-        return mRepeatId;
+    public int getmId() {
+        return mId;
     }
 
-    public void setmRepeatId(int mRepeatId) {
-        this.mRepeatId = mRepeatId;
+    public void setmId(int mId) {
+        this.mId = mId;
+    }
+
+    public int getmTaskId() {
+        return mTaskId;
+    }
+
+    public void setmTaskId(int mTaskId) {
+        this.mTaskId = mTaskId;
     }
 }

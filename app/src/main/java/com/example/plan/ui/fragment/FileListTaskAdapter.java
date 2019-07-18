@@ -14,13 +14,13 @@ import com.example.plan.ui.storage.model.TaskItem;
 
 import java.util.List;
 
-public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileListViewHolder> {
+public class FileListTaskAdapter extends RecyclerView.Adapter<FileListTaskAdapter.FileListViewHolder> {
 
     private Context mContext;
     private List<TaskItem> mData;
     private LayoutInflater mInflater;
 
-    public FileListAdapter(Context context){
+    public FileListTaskAdapter(Context context){
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
     }
@@ -36,7 +36,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
 
     @Override
     public void onBindViewHolder(@NonNull FileListViewHolder fileListViewHolder, int i) {
-
+        TaskItem item = mData.get(i);
+        fileListViewHolder.mName.setText(item.mName);
     }
 
     @Override
@@ -46,6 +47,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
 
     public void updateData(List<TaskItem> data){
         mData = data;
+
         notifyDataSetChanged();
     }
 

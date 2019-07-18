@@ -74,7 +74,7 @@ public class ChoosePlanDialog extends DialogFragment implements IChooseItem<List
         mRecyclerView = mRoot.findViewById(R.id.choose_list_plan);
         mAdapter = new ChoosePlanAdapter(mContext);
         mAdapter.setClickCallBack(this);
-        handleDefaultListClick();
+        //handleDefaultListClick();
         mRecyclerView.setAdapter(mAdapter);
         mController.loadListPlan();
         mDialog = new AlertDialog.Builder(mContext).setView(mRoot).create();
@@ -94,22 +94,22 @@ public class ChoosePlanDialog extends DialogFragment implements IChooseItem<List
         return mDialog;
     }
 
-    private void handleDefaultListClick(){
-        LinearLayout headerToday = mRoot.findViewById(R.id.choose_plan_default_today);
-        headerToday.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_TODAY, mContext.getString(R.string.nav_today)));
-            }
-        });
-        LinearLayout headerImportant = mRoot.findViewById(R.id.choose_plan_default_important);
-        headerImportant.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_IMPORTANT, mContext.getString(R.string.nav_important)));
-            }
-        });
-    }
+//    private void handleDefaultListClick(){
+//        LinearLayout headerToday = mRoot.findViewById(R.id.choose_plan_default_today);
+//        headerToday.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_TODAY, mContext.getString(R.string.nav_today)));
+//            }
+//        });
+//        LinearLayout headerImportant = mRoot.findViewById(R.id.choose_plan_default_important);
+//        headerImportant.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_IMPORTANT, mContext.getString(R.string.nav_important)));
+//            }
+//        });
+//    }
 
     private void observerDataChange(){
         mController.getListPlan().observe(this, new Observer<List<ListPlan>>() {

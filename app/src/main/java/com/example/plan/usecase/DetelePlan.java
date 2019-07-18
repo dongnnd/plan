@@ -1,22 +1,23 @@
 package com.example.plan.usecase;
 
-import android.util.Log;
+import android.media.Image;
 
+import com.example.plan.entities.Task;
 import com.example.plan.ui.storage.model.ListPlan;
 
 import java.util.List;
 
-public class AddListPlan implements IInteractor<ListPlan>{
+public class DetelePlan implements IInteractor<ListPlan>{
     private IRepository mRepository;
     private IThreadExecutor mThread;
-    private String mName;
+    private ListPlan mPlan;
     private IDataCallback<ListPlan> mCallBack;
 
-    public AddListPlan(IRepository repository, IThreadExecutor thread, String name, IDataCallback<ListPlan> callback){
+    public DetelePlan(IRepository repository, IThreadExecutor thread, ListPlan plan, IDataCallback callback){
         mRepository = repository;
         mThread = thread;
-        mName = name;
         mCallBack = callback;
+        mPlan = plan;
     }
 
     @Override
@@ -24,16 +25,14 @@ public class AddListPlan implements IInteractor<ListPlan>{
         mThread.run(new Runnable() {
             @Override
             public void run() {
-                ListPlan newPlan = new ListPlan(mName);
-                long result =  mRepository.insertItem(newPlan);
-                Log.d("dong.nd1", "Result: " + result);
-                mCallBack.executeSuccess(result);
+                mRepository.deleteItem(mPlan);
+                onLoadDataFinish(mRepository.loadListItem());
             }
         });
     }
 
     @Override
     public void onLoadDataFinish(List<ListPlan> data) {
-
+        mCallBack.dataCallBack(data);
     }
 }

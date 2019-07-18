@@ -32,10 +32,11 @@ public class FileListController extends AbsController implements IDataCallback<T
 
     @Override
     public void dataCallBack(List<TaskItem> data) {
+        mData.postValue(data);
     }
 
     @Override
-    public void executeSuccess() {
+    public void executeSuccess(long id) {
 
     }
 

@@ -9,4 +9,6 @@ public interface IRepository<T> {
     List<T> loadListItemWithId(int id);
 
     long insertItem(T item);
+
+    void deleteItem(T item);
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.plan.presenter.contant.AppConstants;
 import com.example.plan.ui.storage.model.ListPlan;
 import com.example.plan.usecase.AddListPlan;
+import com.example.plan.usecase.DetelePlan;
 import com.example.plan.usecase.IDataCallback;
 import com.example.plan.usecase.LoadListPlan;
 
@@ -48,7 +49,13 @@ public class NavigationControler extends AbsController implements IDataCallback<
     }
 
     @Override
-    public void executeSuccess() {
+    public void executeSuccess(long id) {
         loadNavigationItem();
+    }
+
+    public void deletePlan(ListPlan plan){
+        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.LIST_PLAN);
+        DetelePlan detelePlan = new DetelePlan(para.mRepository,para.mThread, plan, this);
+        detelePlan.run();
     }
 }

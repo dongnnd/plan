@@ -39,6 +39,11 @@ public class TaskRepository extends AbsRepository{
 
     @Override
     public long insertItem(Object item) {
-        return 0;
+        return mTaskDao.insertTask((TaskItem)item);
+    }
+
+    @Override
+    public void deleteItem(Object item) {
+
     }
 }

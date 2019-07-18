@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.plan.R;
@@ -21,20 +23,22 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     private Context mContext;
     private LayoutInflater mInflate;
     private IItemAction mActionCallBack;
+    private IItemAction mItemClick;
 
     public interface IItemAction {
         void itemClick(ListPlan item);
 
-        void itemLongClick();
+        void deleteItem(ListPlan item);
     }
 
     public void setItemActionCallBack(IItemAction itemAction) {
         mActionCallBack = itemAction;
     }
 
-    public NavigationAdapter(Context context) {
+    public NavigationAdapter(Context context, IItemAction itemClick) {
         mContext = context;
         mInflate = LayoutInflater.from(mContext);
+        mItemClick = itemClick;
     }
 
 
@@ -54,9 +58,22 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     @Override
     public void onBindViewHolder(@NonNull NavHolder navHolder, final int i) {
-        ListPlan item = mData.get(i);
+
+        final ListPlan item = mData.get(i);
         navHolder.mName.setText(item.getmName());
         navHolder.mCount.setText("1");
+        navHolder.mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mItemClick.deleteItem(item);
+            }
+        });
+        navHolder.mItemContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mItemClick.itemClick(item);
+            }
+        });
     }
 
 
@@ -67,6 +84,10 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     public void updateDataChange(List<ListPlan> data) {
         mData = data;
+        if (mData.size() > 2) {
+            mData.remove(0);
+            mData.remove(0);
+        }
         //addEmptyItem();
         notifyDataSetChanged();
     }
@@ -74,11 +95,15 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     public class NavHolder extends RecyclerView.ViewHolder {
         private TextView mName;
         private TextView mCount;
+        private ImageView mDelete;
+        private LinearLayout mItemContainer;
 
         public NavHolder(View view) {
             super(view);
             mName = view.findViewById(R.id.nav_item_name);
             mCount = view.findViewById(R.id.nav_item_count);
+            mDelete = view.findViewById(R.id.nav_item_delete);
+            mItemContainer = view.findViewById(R.id.nav_item_container);
         }
     }
 

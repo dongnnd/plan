@@ -28,6 +28,7 @@ import com.example.plan.presenter.MainController;
 import com.example.plan.ui.dialog.ChooseDayRepeat;
 import com.example.plan.ui.dialog.ChoosePlanDialog;
 import com.example.plan.ui.dialog.ChooseDateTimeDialog;
+import com.example.plan.ui.fragment.FileListTaskFragment;
 import com.example.plan.ui.fragment.NavigationFragment;
 
 import java.util.Calendar;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mSubmitTask;
     private EditText mNameNewTask;
 
+    private FileListTaskFragment mFileListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +60,19 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initController();
         observerStateDrawer();
+        showDefaultFragment();
         initDrawerLayout();
         initView();
         initBottomViewAddTask();
         handleActionFromBottomSheet();
         setSoftInputMode();
+
+    }
+
+
+    private void showDefaultFragment(){
+        mFileListFragment = new FileListTaskFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.page_container, mFileListFragment).commit();
 
     }
 
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         mSubmitTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("dong.nd1", "AA");
+                mController.addNewTaskToDB();
             }
         });
         mNameNewTask = findViewById(R.id.edt_add_task);
@@ -111,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     mSubmitTask.setImageResource(R.drawable.ic_add_task);
                     mSubmitTask.setClickable(true);
                 }
+                mController.getCurrentDataNewTask().setName(s.toString());
             }
 
             @Override
@@ -212,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationFragment fragment = new NavigationFragment();
+        fragment.setNavigationChange(mFileListFragment);
         fragment.setMainController(mController);
         getSupportFragmentManager().beginTransaction().replace(R.id.navigation_container, fragment).commit();
     }

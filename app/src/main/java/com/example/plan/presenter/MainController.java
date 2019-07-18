@@ -11,6 +11,10 @@ import com.example.plan.entities.Repeat;
 import com.example.plan.entities.Task;
 import com.example.plan.presenter.contant.AppConstants;
 import com.example.plan.ui.storage.model.ListPlan;
+import com.example.plan.ui.storage.model.RemindItem;
+import com.example.plan.ui.storage.model.TaskItem;
+import com.example.plan.usecase.AddRemind;
+import com.example.plan.usecase.AddTask;
 import com.example.plan.usecase.IDataCallback;
 import com.example.plan.usecase.LoadListPlan;
 
@@ -56,7 +60,14 @@ public class MainController extends AbsController implements IDataCallback<ListP
     }
 
     @Override
-    public void executeSuccess() {
+    public void executeSuccess(long id) {
+        // refresh data list item
+
+        if(id != -1){
+            // insert Repeat
+            addRemindToDb((int)id);
+            // insert Remind
+        }
 
     }
 
@@ -77,7 +88,19 @@ public class MainController extends AbsController implements IDataCallback<ListP
     }
 
     public void addNewTaskToDB(){
-        Log.d("dong.nd1", mDataForNewTak.mRemindMe.mDate + " | " + mDataForNewTak.getmRemindMe().getmHour() + ":" + mDataForNewTak.getmRemindMe().getmMinute());
+        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.TASK);
+        TaskItem taskItem = new TaskItem(mDataForNewTak.mName, false, null, mDataForNewTak.mIdListTask);
+        AddTask addTask = new AddTask(para.mRepository, para.mThread, taskItem, this);
+        addTask.run();
+
+    }
+
+    public void addRemindToDb(int id){
+        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.REMIND);
+        RemindItem remindItem = new RemindItem(mDataForNewTak.mRemindMe.mDate, mDataForNewTak.mRemindMe.mHour, mDataForNewTak.mRemindMe.mMinute, mDataForNewTak.mRemindMe.mSecond);
+        remindItem.setmTaskId(id);
+        AddRemind addTask = new AddRemind(para.mRepository, para.mThread, remindItem, this);
+        addTask.run();
     }
 
     public DataForNewTask getCurrentDataNewTask(){
@@ -85,7 +108,9 @@ public class MainController extends AbsController implements IDataCallback<ListP
     }
 
     public class DataForNewTask{
-        private ListPlan mPlan;
+        private int mIdListTask;
+        private String mName;
+
         private Repeat mRepeat;
         private RemindMe mRemindMe;
 
@@ -94,18 +119,14 @@ public class MainController extends AbsController implements IDataCallback<ListP
         }
 
         public void reset(){
-            mPlan = new ListPlan();
             mRemindMe = new RemindMe();
             mRepeat = new Repeat();
         }
 
-        public ListPlan getmPlan() {
-            return mPlan;
-        }
 
-        public void setmPlan(ListPlan mPlan) {
-            this.mPlan = mPlan;
-            mChoosePlan.setValue(mPlan.mName);
+        public void setmPlan(ListPlan plan) {
+            mIdListTask = plan.getmId();
+            mChoosePlan.setValue(plan.getmName());
         }
 
         public Repeat getmRepeat() {
@@ -137,6 +158,10 @@ public class MainController extends AbsController implements IDataCallback<ListP
             result += mRemindMe.getmHour() + ":" +mRemindMe.getmMinute() + "\n";
             result += date;
             return result;
+        }
+
+        public void setName(String name){
+            mName = name;
         }
     }
 

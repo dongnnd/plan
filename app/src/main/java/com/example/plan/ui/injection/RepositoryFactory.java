@@ -7,6 +7,8 @@ import com.example.plan.ui.storage.AppDatabase;
 import com.example.plan.ui.storage.dao.ListPlanDao;
 import com.example.plan.ui.storage.repository.AbsRepository;
 import com.example.plan.ui.storage.repository.ListPlanRepository;
+import com.example.plan.ui.storage.repository.RemindRepository;
+import com.example.plan.ui.storage.repository.RepeatRepository;
 import com.example.plan.ui.storage.repository.TaskRepository;
 
 public class RepositoryFactory {
@@ -22,6 +24,7 @@ public class RepositoryFactory {
                 break;
             case AppConstants
                     .DataType.REMIND:
+                repository = RemindRepository.getInstance(database.getRemindDao());
                 break;
             case AppConstants
                     .DataType.TASK:
@@ -29,6 +32,7 @@ public class RepositoryFactory {
                 break;
             case AppConstants
                     .DataType.REPEAT_ME:
+                repository = RepeatRepository.getInstance(database.getRepeatDao());
                 break;
         }
         return repository;

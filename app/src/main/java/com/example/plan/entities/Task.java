@@ -3,14 +3,14 @@ package com.example.plan.entities;
 public class Task {
     public String mName;
     public boolean mIsCompleted;
-    public int mRepeat;
     public String mNote;
+    public int mListId;
 
-    public Task(String name, boolean isCompleted, int repeat, String note) {
+    public Task(String name, boolean isCompleted, String note, int idListPlan) {
         mName = name;
         mIsCompleted = isCompleted;
-        mRepeat = repeat;
         mNote = note;
+        mListId = idListPlan;
     }
 
     public Task(){
@@ -33,20 +33,19 @@ public class Task {
         this.mIsCompleted = mIsCompleted;
     }
 
-
-    public int getmRepeat() {
-        return mRepeat;
-    }
-
-    public void setmRepeat(int mRepeat) {
-        this.mRepeat = mRepeat;
-    }
-
     public String getmNote() {
         return mNote;
     }
 
     public void setmNote(String mNote) {
         this.mNote = mNote;
+    }
+
+    public int getmListId() {
+        return mListId;
+    }
+
+    public void setmListId(int mListId) {
+        this.mListId = mListId;
     }
 }

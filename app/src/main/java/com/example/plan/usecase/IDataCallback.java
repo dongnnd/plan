@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IDataCallback<T> {
     void dataCallBack(List<T> data);
-    void executeSuccess();
+    void executeSuccess(long result);
     void executeFail();
 }

@@ -33,6 +33,11 @@ public class NavigationFragment extends Fragment implements ILoading, Navigation
     private NavigationAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private TextView mAddList;
+    private INavigationChange mNavigationChange;
+
+    public void setNavigationChange(INavigationChange change){
+        mNavigationChange = change;
+    }
 
     public void setMainController(MainController mainController){
         mMainController = mainController;
@@ -48,6 +53,10 @@ public class NavigationFragment extends Fragment implements ILoading, Navigation
 
 
 
+    public void onRefresh(){
+        startLoading();
+    }
+
     @Override
     public void startLoading() {
         mController.loadNavigationItem();
@@ -57,6 +66,7 @@ public class NavigationFragment extends Fragment implements ILoading, Navigation
         mController.getListData().observe(this, new Observer<List<ListPlan>>() {
             @Override
             public void onChanged(@Nullable List<ListPlan> listPlans) {
+                Log.d("dong.nd1", "change");
                 mAdapter.updateDataChange(listPlans);
             }
         });
@@ -86,7 +96,7 @@ public class NavigationFragment extends Fragment implements ILoading, Navigation
                 showDialogAddList();
             }
         });
-        mAdapter = new NavigationAdapter(getContext());
+        mAdapter = new NavigationAdapter(getContext(), this);
         mAdapter.setItemActionCallBack(this);
         mRecyclerView = view.findViewById(R.id.nav_recyclerview);
         mRecyclerView.setAdapter(mAdapter);
@@ -129,20 +139,13 @@ public class NavigationFragment extends Fragment implements ILoading, Navigation
 
     @Override
     public void itemClick(ListPlan item) {
-        enterFileListTask(item.getmId());
+        mNavigationChange.onNavigationChange(item);
         mMainController.setValueStateDrawer(true);
     }
 
     @Override
-    public void itemLongClick() {
-
+    public void deleteItem(ListPlan listPlan) {
+        mController.deletePlan(listPlan);
     }
 
-    private void enterFileListTask(int listTaskID){
-        FileListTaskFragment fragment = new FileListTaskFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(FileListTaskFragment.LIST_TASK_ID, listTaskID);
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.page_container, fragment).commit();
-    }
 }

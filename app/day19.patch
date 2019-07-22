@@ -1,0 +1,2684 @@
+Index: app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/TaskDao_Impl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/TaskDao_Impl.java	(date 1563529960707)
++++ app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/TaskDao_Impl.java	(date 1563529960707)
+@@ -1,5 +1,8 @@
+ package com.example.plan.ui.storage.dao;
+ 
++import android.arch.persistence.db.SupportSQLiteStatement;
++import android.arch.persistence.room.EntityDeletionOrUpdateAdapter;
++import android.arch.persistence.room.EntityInsertionAdapter;
+ import android.arch.persistence.room.RoomDatabase;
+ import android.arch.persistence.room.RoomSQLiteQuery;
+ import android.database.Cursor;
+@@ -14,8 +17,71 @@
+ public class TaskDao_Impl implements TaskDao {
+   private final RoomDatabase __db;
+ 
++  private final EntityInsertionAdapter __insertionAdapterOfTaskItem;
++
++  private final EntityDeletionOrUpdateAdapter __deletionAdapterOfTaskItem;
++
+   public TaskDao_Impl(RoomDatabase __db) {
+     this.__db = __db;
++    this.__insertionAdapterOfTaskItem = new EntityInsertionAdapter<TaskItem>(__db) {
++      @Override
++      public String createQuery() {
++        return "INSERT OR ABORT INTO `task`(`mName`,`mIsCompleted`,`mNote`,`mListId`,`mId`) VALUES (?,?,?,?,nullif(?, 0))";
++      }
++
++      @Override
++      public void bind(SupportSQLiteStatement stmt, TaskItem value) {
++        if (value.mName == null) {
++          stmt.bindNull(1);
++        } else {
++          stmt.bindString(1, value.mName);
++        }
++        final int _tmp;
++        _tmp = value.mIsCompleted ? 1 : 0;
++        stmt.bindLong(2, _tmp);
++        if (value.mNote == null) {
++          stmt.bindNull(3);
++        } else {
++          stmt.bindString(3, value.mNote);
++        }
++        stmt.bindLong(4, value.mListId);
++        stmt.bindLong(5, value.mId);
++      }
++    };
++    this.__deletionAdapterOfTaskItem = new EntityDeletionOrUpdateAdapter<TaskItem>(__db) {
++      @Override
++      public String createQuery() {
++        return "DELETE FROM `task` WHERE `mId` = ?";
++      }
++
++      @Override
++      public void bind(SupportSQLiteStatement stmt, TaskItem value) {
++        stmt.bindLong(1, value.mId);
++      }
++    };
++  }
++
++  @Override
++  public long insertTask(TaskItem item) {
++    __db.beginTransaction();
++    try {
++      long _result = __insertionAdapterOfTaskItem.insertAndReturnId(item);
++      __db.setTransactionSuccessful();
++      return _result;
++    } finally {
++      __db.endTransaction();
++    }
++  }
++
++  @Override
++  public long deleteTask(TaskItem item) {
++    __db.beginTransaction();
++    try {
++      __deletionAdapterOfTaskItem.handle(item);
++      __db.setTransactionSuccessful();
++    } finally {
++      __db.endTransaction();
++    }
+   }
+ 
+   @Override
+@@ -26,26 +92,20 @@
+     try {
+       final int _cursorIndexOfMName = _cursor.getColumnIndexOrThrow("mName");
+       final int _cursorIndexOfMIsCompleted = _cursor.getColumnIndexOrThrow("mIsCompleted");
+-      final int _cursorIndexOfMRepeat = _cursor.getColumnIndexOrThrow("mRepeat");
+       final int _cursorIndexOfMNote = _cursor.getColumnIndexOrThrow("mNote");
++      final int _cursorIndexOfMListId = _cursor.getColumnIndexOrThrow("mListId");
+       final int _cursorIndexOfMId = _cursor.getColumnIndexOrThrow("mId");
+-      final int _cursorIndexOfMTaskId = _cursor.getColumnIndexOrThrow("mTaskId");
+       final List<TaskItem> _result = new ArrayList<TaskItem>(_cursor.getCount());
+       while(_cursor.moveToNext()) {
+         final TaskItem _item;
+-        final String _tmpMName;
+-        _tmpMName = _cursor.getString(_cursorIndexOfMName);
+-        final boolean _tmpMIsCompleted;
++        _item = new TaskItem();
++        _item.mName = _cursor.getString(_cursorIndexOfMName);
+         final int _tmp;
+         _tmp = _cursor.getInt(_cursorIndexOfMIsCompleted);
+-        _tmpMIsCompleted = _tmp != 0;
+-        final int _tmpMRepeat;
+-        _tmpMRepeat = _cursor.getInt(_cursorIndexOfMRepeat);
+-        final String _tmpMNote;
+-        _tmpMNote = _cursor.getString(_cursorIndexOfMNote);
+-        _item = new TaskItem(_tmpMName,_tmpMIsCompleted,_tmpMRepeat,_tmpMNote);
++        _item.mIsCompleted = _tmp != 0;
++        _item.mNote = _cursor.getString(_cursorIndexOfMNote);
++        _item.mListId = _cursor.getInt(_cursorIndexOfMListId);
+         _item.mId = _cursor.getInt(_cursorIndexOfMId);
+-        _item.mTaskId = _cursor.getInt(_cursorIndexOfMTaskId);
+         _result.add(_item);
+       }
+       return _result;
+@@ -57,7 +117,7 @@
+ 
+   @Override
+   public List<TaskItem> getTaskWithID(int taskId) {
+-    final String _sql = "SELECT * FROM task WHERE mTaskId = ?";
++    final String _sql = "SELECT * FROM task WHERE mListId = ?";
+     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+     int _argIndex = 1;
+     _statement.bindLong(_argIndex, taskId);
+@@ -65,26 +125,20 @@
+     try {
+       final int _cursorIndexOfMName = _cursor.getColumnIndexOrThrow("mName");
+       final int _cursorIndexOfMIsCompleted = _cursor.getColumnIndexOrThrow("mIsCompleted");
+-      final int _cursorIndexOfMRepeat = _cursor.getColumnIndexOrThrow("mRepeat");
+       final int _cursorIndexOfMNote = _cursor.getColumnIndexOrThrow("mNote");
++      final int _cursorIndexOfMListId = _cursor.getColumnIndexOrThrow("mListId");
+       final int _cursorIndexOfMId = _cursor.getColumnIndexOrThrow("mId");
+-      final int _cursorIndexOfMTaskId = _cursor.getColumnIndexOrThrow("mTaskId");
+       final List<TaskItem> _result = new ArrayList<TaskItem>(_cursor.getCount());
+       while(_cursor.moveToNext()) {
+         final TaskItem _item;
+-        final String _tmpMName;
+-        _tmpMName = _cursor.getString(_cursorIndexOfMName);
+-        final boolean _tmpMIsCompleted;
++        _item = new TaskItem();
++        _item.mName = _cursor.getString(_cursorIndexOfMName);
+         final int _tmp;
+         _tmp = _cursor.getInt(_cursorIndexOfMIsCompleted);
+-        _tmpMIsCompleted = _tmp != 0;
+-        final int _tmpMRepeat;
+-        _tmpMRepeat = _cursor.getInt(_cursorIndexOfMRepeat);
+-        final String _tmpMNote;
+-        _tmpMNote = _cursor.getString(_cursorIndexOfMNote);
+-        _item = new TaskItem(_tmpMName,_tmpMIsCompleted,_tmpMRepeat,_tmpMNote);
++        _item.mIsCompleted = _tmp != 0;
++        _item.mNote = _cursor.getString(_cursorIndexOfMNote);
++        _item.mListId = _cursor.getInt(_cursorIndexOfMListId);
+         _item.mId = _cursor.getInt(_cursorIndexOfMId);
+-        _item.mTaskId = _cursor.getInt(_cursorIndexOfMTaskId);
+         _result.add(_item);
+       }
+       return _result;
+Index: app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RemindDao_Impl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RemindDao_Impl.java	(date 1563529960696)
++++ app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RemindDao_Impl.java	(date 1563529960696)
+@@ -1,13 +1,48 @@
+ package com.example.plan.ui.storage.dao;
+ 
++import android.arch.persistence.db.SupportSQLiteStatement;
++import android.arch.persistence.room.EntityInsertionAdapter;
+ import android.arch.persistence.room.RoomDatabase;
++import com.example.plan.ui.storage.model.RemindItem;
++import java.lang.Override;
++import java.lang.String;
+ import java.lang.SuppressWarnings;
+ 
+ @SuppressWarnings("unchecked")
+ public class RemindDao_Impl implements RemindDao {
+   private final RoomDatabase __db;
+ 
++  private final EntityInsertionAdapter __insertionAdapterOfRemindItem;
++
+   public RemindDao_Impl(RoomDatabase __db) {
+     this.__db = __db;
++    this.__insertionAdapterOfRemindItem = new EntityInsertionAdapter<RemindItem>(__db) {
++      @Override
++      public String createQuery() {
++        return "INSERT OR ABORT INTO `remind`(`mDate`,`mHour`,`mMinute`,`mSecond`,`mId`,`mTaskId`) VALUES (?,?,?,?,nullif(?, 0),?)";
++      }
++
++      @Override
++      public void bind(SupportSQLiteStatement stmt, RemindItem value) {
++        stmt.bindLong(1, value.mDate);
++        stmt.bindLong(2, value.mHour);
++        stmt.bindLong(3, value.mMinute);
++        stmt.bindLong(4, value.mSecond);
++        stmt.bindLong(5, value.mId);
++        stmt.bindLong(6, value.mTaskId);
++      }
++    };
++  }
++
++  @Override
++  public long insertRemind(RemindItem remindMe) {
++    __db.beginTransaction();
++    try {
++      long _result = __insertionAdapterOfRemindItem.insertAndReturnId(remindMe);
++      __db.setTransactionSuccessful();
++      return _result;
++    } finally {
++      __db.endTransaction();
++    }
+   }
+ }
+Index: app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RepeatDao_Impl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RepeatDao_Impl.java	(date 1563529960701)
++++ app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/RepeatDao_Impl.java	(date 1563529960701)
+@@ -1,13 +1,52 @@
+ package com.example.plan.ui.storage.dao;
+ 
++import android.arch.persistence.db.SupportSQLiteStatement;
++import android.arch.persistence.room.EntityInsertionAdapter;
+ import android.arch.persistence.room.RoomDatabase;
++import com.example.plan.ui.storage.model.RepeatItem;
++import java.lang.Override;
++import java.lang.String;
+ import java.lang.SuppressWarnings;
+ 
+ @SuppressWarnings("unchecked")
+ public class RepeatDao_Impl implements RepeatDao {
+   private final RoomDatabase __db;
+ 
++  private final EntityInsertionAdapter __insertionAdapterOfRepeatItem;
++
+   public RepeatDao_Impl(RoomDatabase __db) {
+     this.__db = __db;
++    this.__insertionAdapterOfRepeatItem = new EntityInsertionAdapter<RepeatItem>(__db) {
++      @Override
++      public String createQuery() {
++        return "INSERT OR ABORT INTO `repeat`(`mNone`,`mMon`,`mTue`,`mWed`,`mThurs`,`mFri`,`Sat`,`Sun`,`mId`,`mTaskId`) VALUES (?,?,?,?,?,?,?,?,nullif(?, 0),?)";
++      }
++
++      @Override
++      public void bind(SupportSQLiteStatement stmt, RepeatItem value) {
++        stmt.bindLong(1, value.mNone);
++        stmt.bindLong(2, value.mMon);
++        stmt.bindLong(3, value.mTue);
++        stmt.bindLong(4, value.mWed);
++        stmt.bindLong(5, value.mThurs);
++        stmt.bindLong(6, value.mFri);
++        stmt.bindLong(7, value.Sat);
++        stmt.bindLong(8, value.Sun);
++        stmt.bindLong(9, value.mId);
++        stmt.bindLong(10, value.mTaskId);
++      }
++    };
++  }
++
++  @Override
++  public long insertRepeatItem(RepeatItem repeatItem) {
++    __db.beginTransaction();
++    try {
++      long _result = __insertionAdapterOfRepeatItem.insertAndReturnId(repeatItem);
++      __db.setTransactionSuccessful();
++      return _result;
++    } finally {
++      __db.endTransaction();
++    }
+   }
+ }
+Index: app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/ListPlanDao_Impl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/ListPlanDao_Impl.java	(date 1563529960692)
++++ app/build/generated/source/apt/debug/com/example/plan/ui/storage/dao/ListPlanDao_Impl.java	(date 1563529960692)
+@@ -1,6 +1,7 @@
+ package com.example.plan.ui.storage.dao;
+ 
+ import android.arch.persistence.db.SupportSQLiteStatement;
++import android.arch.persistence.room.EntityDeletionOrUpdateAdapter;
+ import android.arch.persistence.room.EntityInsertionAdapter;
+ import android.arch.persistence.room.RoomDatabase;
+ import android.arch.persistence.room.RoomSQLiteQuery;
+@@ -18,6 +19,8 @@
+ 
+   private final EntityInsertionAdapter __insertionAdapterOfListPlan;
+ 
++  private final EntityDeletionOrUpdateAdapter __deletionAdapterOfListPlan;
++
+   public ListPlanDao_Impl(RoomDatabase __db) {
+     this.__db = __db;
+     this.__insertionAdapterOfListPlan = new EntityInsertionAdapter<ListPlan>(__db) {
+@@ -36,6 +39,17 @@
+         }
+       }
+     };
++    this.__deletionAdapterOfListPlan = new EntityDeletionOrUpdateAdapter<ListPlan>(__db) {
++      @Override
++      public String createQuery() {
++        return "DELETE FROM `list_plan` WHERE `mId` = ?";
++      }
++
++      @Override
++      public void bind(SupportSQLiteStatement stmt, ListPlan value) {
++        stmt.bindLong(1, value.mId);
++      }
++    };
+   }
+ 
+   @Override
+@@ -49,6 +63,19 @@
+       __db.endTransaction();
+     }
+   }
++
++  @Override
++  public int deleteItem(ListPlan item) {
++    int _total = 0;
++    __db.beginTransaction();
++    try {
++      _total +=__deletionAdapterOfListPlan.handle(item);
++      __db.setTransactionSuccessful();
++      return _total;
++    } finally {
++      __db.endTransaction();
++    }
++  }
+ 
+   @Override
+   public List<ListPlan> getAllListPlan() {
+Index: app/build/generated/source/apt/debug/com/example/plan/ui/storage/AppDatabase_Impl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build/generated/source/apt/debug/com/example/plan/ui/storage/AppDatabase_Impl.java	(date 1563529960738)
++++ app/build/generated/source/apt/debug/com/example/plan/ui/storage/AppDatabase_Impl.java	(date 1563529960738)
+@@ -44,11 +44,11 @@
+       @Override
+       public void createAllTables(SupportSQLiteDatabase _db) {
+         _db.execSQL("CREATE TABLE IF NOT EXISTS `list_plan` (`mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mName` TEXT)");
+-        _db.execSQL("CREATE TABLE IF NOT EXISTS `remind` (`mDate` INTEGER NOT NULL, `mHour` INTEGER NOT NULL, `mMinute` INTEGER NOT NULL, `mSecond` INTEGER NOT NULL, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mRemindId` INTEGER NOT NULL, FOREIGN KEY(`mRemindId`) REFERENCES `task`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+-        _db.execSQL("CREATE TABLE IF NOT EXISTS `task` (`mName` TEXT, `mIsCompleted` INTEGER NOT NULL, `mRepeat` INTEGER NOT NULL, `mNote` TEXT, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mTaskId` INTEGER NOT NULL, FOREIGN KEY(`mTaskId`) REFERENCES `list_plan`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+-        _db.execSQL("CREATE TABLE IF NOT EXISTS `repeat` (`mNone` INTEGER NOT NULL, `mMon` INTEGER NOT NULL, `mTue` INTEGER NOT NULL, `mWed` INTEGER NOT NULL, `mThurs` INTEGER NOT NULL, `mFri` INTEGER NOT NULL, `Sat` INTEGER NOT NULL, `Sun` INTEGER NOT NULL, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mRepeatId` INTEGER NOT NULL, FOREIGN KEY(`mRepeatId`) REFERENCES `task`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
++        _db.execSQL("CREATE TABLE IF NOT EXISTS `remind` (`mDate` INTEGER NOT NULL, `mHour` INTEGER NOT NULL, `mMinute` INTEGER NOT NULL, `mSecond` INTEGER NOT NULL, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mTaskId` INTEGER NOT NULL, FOREIGN KEY(`mTaskId`) REFERENCES `task`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
++        _db.execSQL("CREATE TABLE IF NOT EXISTS `task` (`mName` TEXT, `mIsCompleted` INTEGER NOT NULL, `mNote` TEXT, `mListId` INTEGER NOT NULL, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, FOREIGN KEY(`mListId`) REFERENCES `list_plan`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
++        _db.execSQL("CREATE TABLE IF NOT EXISTS `repeat` (`mNone` INTEGER NOT NULL, `mMon` INTEGER NOT NULL, `mTue` INTEGER NOT NULL, `mWed` INTEGER NOT NULL, `mThurs` INTEGER NOT NULL, `mFri` INTEGER NOT NULL, `Sat` INTEGER NOT NULL, `Sun` INTEGER NOT NULL, `mId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `mTaskId` INTEGER NOT NULL, FOREIGN KEY(`mTaskId`) REFERENCES `task`(`mId`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
+-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"2aed657f1a63419d4dc279335f8102a4\")");
++        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7eaf076aadb1c58e7b35f06845ba77cf\")");
+       }
+ 
+       @Override
+@@ -100,9 +100,9 @@
+         _columnsRemind.put("mMinute", new TableInfo.Column("mMinute", "INTEGER", true, 0));
+         _columnsRemind.put("mSecond", new TableInfo.Column("mSecond", "INTEGER", true, 0));
+         _columnsRemind.put("mId", new TableInfo.Column("mId", "INTEGER", true, 1));
+-        _columnsRemind.put("mRemindId", new TableInfo.Column("mRemindId", "INTEGER", true, 0));
++        _columnsRemind.put("mTaskId", new TableInfo.Column("mTaskId", "INTEGER", true, 0));
+         final HashSet<TableInfo.ForeignKey> _foreignKeysRemind = new HashSet<TableInfo.ForeignKey>(1);
+-        _foreignKeysRemind.add(new TableInfo.ForeignKey("task", "CASCADE", "NO ACTION",Arrays.asList("mRemindId"), Arrays.asList("mId")));
++        _foreignKeysRemind.add(new TableInfo.ForeignKey("task", "CASCADE", "NO ACTION",Arrays.asList("mTaskId"), Arrays.asList("mId")));
+         final HashSet<TableInfo.Index> _indicesRemind = new HashSet<TableInfo.Index>(0);
+         final TableInfo _infoRemind = new TableInfo("remind", _columnsRemind, _foreignKeysRemind, _indicesRemind);
+         final TableInfo _existingRemind = TableInfo.read(_db, "remind");
+@@ -111,15 +111,14 @@
+                   + " Expected:\n" + _infoRemind + "\n"
+                   + " Found:\n" + _existingRemind);
+         }
+-        final HashMap<String, TableInfo.Column> _columnsTask = new HashMap<String, TableInfo.Column>(6);
++        final HashMap<String, TableInfo.Column> _columnsTask = new HashMap<String, TableInfo.Column>(5);
+         _columnsTask.put("mName", new TableInfo.Column("mName", "TEXT", false, 0));
+         _columnsTask.put("mIsCompleted", new TableInfo.Column("mIsCompleted", "INTEGER", true, 0));
+-        _columnsTask.put("mRepeat", new TableInfo.Column("mRepeat", "INTEGER", true, 0));
+         _columnsTask.put("mNote", new TableInfo.Column("mNote", "TEXT", false, 0));
++        _columnsTask.put("mListId", new TableInfo.Column("mListId", "INTEGER", true, 0));
+         _columnsTask.put("mId", new TableInfo.Column("mId", "INTEGER", true, 1));
+-        _columnsTask.put("mTaskId", new TableInfo.Column("mTaskId", "INTEGER", true, 0));
+         final HashSet<TableInfo.ForeignKey> _foreignKeysTask = new HashSet<TableInfo.ForeignKey>(1);
+-        _foreignKeysTask.add(new TableInfo.ForeignKey("list_plan", "CASCADE", "NO ACTION",Arrays.asList("mTaskId"), Arrays.asList("mId")));
++        _foreignKeysTask.add(new TableInfo.ForeignKey("list_plan", "CASCADE", "NO ACTION",Arrays.asList("mListId"), Arrays.asList("mId")));
+         final HashSet<TableInfo.Index> _indicesTask = new HashSet<TableInfo.Index>(0);
+         final TableInfo _infoTask = new TableInfo("task", _columnsTask, _foreignKeysTask, _indicesTask);
+         final TableInfo _existingTask = TableInfo.read(_db, "task");
+@@ -138,9 +137,9 @@
+         _columnsRepeat.put("Sat", new TableInfo.Column("Sat", "INTEGER", true, 0));
+         _columnsRepeat.put("Sun", new TableInfo.Column("Sun", "INTEGER", true, 0));
+         _columnsRepeat.put("mId", new TableInfo.Column("mId", "INTEGER", true, 1));
+-        _columnsRepeat.put("mRepeatId", new TableInfo.Column("mRepeatId", "INTEGER", true, 0));
++        _columnsRepeat.put("mTaskId", new TableInfo.Column("mTaskId", "INTEGER", true, 0));
+         final HashSet<TableInfo.ForeignKey> _foreignKeysRepeat = new HashSet<TableInfo.ForeignKey>(1);
+-        _foreignKeysRepeat.add(new TableInfo.ForeignKey("task", "CASCADE", "NO ACTION",Arrays.asList("mRepeatId"), Arrays.asList("mId")));
++        _foreignKeysRepeat.add(new TableInfo.ForeignKey("task", "CASCADE", "NO ACTION",Arrays.asList("mTaskId"), Arrays.asList("mId")));
+         final HashSet<TableInfo.Index> _indicesRepeat = new HashSet<TableInfo.Index>(0);
+         final TableInfo _infoRepeat = new TableInfo("repeat", _columnsRepeat, _foreignKeysRepeat, _indicesRepeat);
+         final TableInfo _existingRepeat = TableInfo.read(_db, "repeat");
+@@ -150,7 +149,7 @@
+                   + " Found:\n" + _existingRepeat);
+         }
+       }
+-    }, "2aed657f1a63419d4dc279335f8102a4", "ade8d06da81a2df56ef4f89058b318e9");
++    }, "7eaf076aadb1c58e7b35f06845ba77cf", "1bd8e8e8a856f470aabc657d97761e5a");
+     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
+         .name(configuration.name)
+         .callback(_openCallback)
+Index: app/app.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/app.iml	(date 1563500712236)
++++ app/app.iml	(date 1563500712236)
+@@ -17,7 +17,7 @@
+         <option name="ALLOW_USER_CONFIGURATION" value="false" />
+         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
+         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
+-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/rs/debug" />
++        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/rs/debug;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
+         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
+         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
+       </configuration>
+@@ -86,10 +86,40 @@
+       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
+       <excludeFolder url="file://$MODULE_DIR$/build/generated/not_namespaced_r_class_sources" />
+       <excludeFolder url="file://$MODULE_DIR$/build/generated/source/r" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/annotation_processor_list" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/apk_list" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundle_manifest" />
+       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/check_manifest_result" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/compatible_screen_manifest" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/data-binding" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/data_binding_base_class_log_artifact" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/data_binding_base_class_logs_dependency_artifacts" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/data_binding_dependency_artifacts" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/data_binding_layout_info_type_merge" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/feature_data_binding_base_feature_info" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_app_manifest" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant_run_merged_manifests" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javac" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint_jar" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_assets" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/merged_manifests" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/metadata_feature_manifest" />
+       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/processed_res" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
+       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shader_assets" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/signing_config" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
++      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/validate_signing_config" />
++      <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
++      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
+     </content>
+     <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+Index: app/src/main/res/layout/nav_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/nav_item.xml	(date 1563466761000)
++++ app/src/main/res/layout/nav_item.xml	(date 1563466761000)
+@@ -3,29 +3,44 @@
+     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+     android:layout_height="40dp"
+     android:orientation="horizontal"
+-    android:weightSum="5">
+-
+-    <ImageView
+-        android:id="@+id/nav_item_icon"
+-        android:layout_width="0dp"
+-        android:layout_weight="1"
+-        android:scaleType="center"
+-        android:src="@drawable/ic_list_plan"
+-        android:layout_height="match_parent" />
++    android:weightSum="6">
++
++    <LinearLayout
++        android:id="@+id/nav_item_container"
++        android:layout_width="0dp"
++        android:layout_weight="5"
++        android:layout_height="wrap_content"
++        android:orientation="horizontal"
++        android:weightSum="5">
++        <ImageView
++            android:id="@+id/nav_item_icon"
++            android:layout_width="0dp"
++            android:layout_weight="1"
++            android:scaleType="center"
++            android:src="@drawable/ic_list_plan"
++            android:layout_height="match_parent" />
+ 
+-    <TextView
+-        android:id="@+id/nav_item_name"
+-        android:layout_width="0dp"
+-        android:layout_weight="3"
+-        android:gravity="center_vertical"
+-        android:layout_height="match_parent" />
++        <TextView
++            android:id="@+id/nav_item_name"
++            android:layout_width="0dp"
++            android:layout_weight="3"
++            android:gravity="center_vertical"
++            android:layout_height="match_parent" />
+ 
+-    <TextView
+-        android:id="@+id/nav_item_count"
+-        android:layout_width="0dp"
+-        android:layout_weight="1"
+-        android:gravity="center"
+-        android:text="2"
+-        android:layout_height="match_parent" />
++        <TextView
++            android:id="@+id/nav_item_count"
++            android:layout_width="0dp"
++            android:layout_weight="1"
++            android:gravity="center"
++            android:text="2"
++            android:layout_height="match_parent" />
++    </LinearLayout>
++    <ImageView
++        android:id="@+id/nav_item_delete"
++        android:layout_width="0dp"
++        android:layout_weight="1"
++        android:layout_gravity="center"
++        android:layout_height="wrap_content"
++        android:src="@drawable/ic_delete"/>
+ 
+ </LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/file_list_task.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/file_list_task.xml	(date 1563466761000)
++++ app/src/main/res/layout/file_list_task.xml	(date 1563466761000)
+@@ -2,10 +2,10 @@
+ <android.support.design.widget.CoordinatorLayout
+     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    >
+-    <!--<TextView
++    android:layout_margin="@dimen/margin_view_default">
++    <android.support.v7.widget.RecyclerView
++        android:id="@+id/file_list_task"
+         android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:text="Dong"/>-->
++        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+ 
+ </android.support.design.widget.CoordinatorLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/list_task_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/list_task_item.xml	(date 1563529729540)
++++ app/src/main/res/layout/list_task_item.xml	(date 1563529729540)
+@@ -1,10 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+-    android:layout_height="50dp"
+-    android:weightSum="4">
++    android:layout_height="60dp"
++    android:weightSum="6"
++    android:layout_marginStart="@dimen/margin_item"
++    android:layout_marginEnd="@dimen/margin_item">
+ 
+-    <RadioButton
++    <CheckBox
+         android:id="@+id/task_item_radio"
+         android:layout_width="0dp"
+         android:layout_weight="1"
+@@ -12,6 +14,15 @@
+     <TextView
+         android:id="@+id/task_item_name"
+         android:layout_width="0dp"
+-        android:layout_weight="3"
++        android:layout_weight="4"
++        android:textSize="20sp"
++        android:gravity="center_vertical"
+         android:layout_height="match_parent" />
++    <ImageView
++        android:id="@+id/task_item_delete"
++        android:layout_width="0dp"
++        android:layout_weight="1"
++        android:layout_gravity="center_vertical"
++        android:layout_height="wrap_content"
++        android:src="@drawable/ic_delete_task"/>
+ </LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/choose_plan_dialog.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/choose_plan_dialog.xml	(date 1563466761000)
++++ app/src/main/res/layout/choose_plan_dialog.xml	(date 1563466761000)
+@@ -6,69 +6,7 @@
+     android:orientation="vertical"
+     android:background="@drawable/dialog_background">
+ 
+-    <android.support.v7.widget.CardView
+-        android:layout_width="match_parent"
+-        android:layout_height="40dp"
+-        android:layout_margin="5dp">
+-        <LinearLayout
+-            android:id="@+id/choose_plan_default_today"
+-            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+-            android:layout_height="match_parent"
+-            android:orientation="horizontal"
+-            android:weightSum="4">
+-
+-            <ImageView
+-                android:layout_width="0dp"
+-                android:layout_weight="1"
+-                android:scaleType="center"
+-                android:src="@drawable/ic_today"
+-                android:layout_height="match_parent" />
+ 
+-            <TextView
+-                android:id="@+id/nav_today"
+-                android:layout_width="0dp"
+-                android:layout_weight="3"
+-                android:gravity="center_vertical"
+-                android:layout_height="match_parent"
+-                android:text="To day"/>
+-
+-        </LinearLayout>
+-    </android.support.v7.widget.CardView>
+-    <android.support.v7.widget.CardView
+-        android:layout_width="match_parent"
+-        android:layout_height="40dp"
+-        android:layout_margin="5dp">
+-        <LinearLayout
+-            android:id="@+id/choose_plan_default_important"
+-            xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+-            android:layout_height="match_parent"
+-            android:orientation="horizontal"
+-            android:weightSum="4">
+-
+-            <ImageView
+-                android:layout_width="0dp"
+-                android:layout_weight="1"
+-                android:scaleType="center"
+-                android:src="@drawable/ic_today"
+-                android:layout_height="match_parent" />
+-
+-            <TextView
+-                android:id="@+id/nav_important"
+-                android:layout_width="0dp"
+-                android:layout_weight="3"
+-                android:gravity="center_vertical"
+-                android:layout_height="match_parent"
+-                android:text="Important"/>
+-
+-        </LinearLayout>
+-    </android.support.v7.widget.CardView>
+-    <View
+-        android:id="@+id/nav_divider"
+-        android:layout_width="match_parent"
+-        android:layout_height="1dp"
+-        android:layout_marginTop="10dp"
+-        android:layout_marginBottom="10dp"
+-        android:layout_below="@+id/nav_important" />
+     <android.support.v7.widget.RecyclerView
+         android:id="@+id/choose_list_plan"
+         android:layout_width="match_parent"
+Index: app/src/main/res/values/dimens.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/dimens.xml	(date 1563520090154)
++++ app/src/main/res/values/dimens.xml	(date 1563520090154)
+@@ -11,4 +11,7 @@
+     <!--Default-->
+     <dimen name="padding_text_default">10dp</dimen>
+     <dimen name="margin_view_default">10dp</dimen>
++
++    <!--Recycler Item-->
++    <dimen name="margin_item">20dp</dimen>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/drawable/divider.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/divider.xml	(date 1563501663617)
++++ app/src/main/res/drawable/divider.xml	(date 1563501663617)
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android"
++    android:shape="rectangle">
++
++    <size
++        android:width="1dp"
++        android:height="1dp" />
++
++    <solid android:color="#2EC590" />
++
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/drawable/ic_delete.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_delete.xml	(date 1563466761000)
++++ app/src/main/res/drawable/ic_delete.xml	(date 1563466761000)
+@@ -0,0 +1,9 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++        android:width="24dp"
++        android:height="24dp"
++        android:viewportWidth="24.0"
++        android:viewportHeight="24.0">
++    <path
++        android:fillColor="#FF000000"
++        android:pathData="M6,19c0,1.1 0.9,2 2,2h8c1.1,0 2,-0.9 2,-2V7H6v12zM19,4h-3.5l-1,-1h-5l-1,1H5v2h14V4z"/>
++</vector>
+Index: app/src/main/res/drawable/ic_delete_task.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_delete_task.xml	(date 1563528879088)
++++ app/src/main/res/drawable/ic_delete_task.xml	(date 1563528879088)
+@@ -0,0 +1,5 @@
++<vector android:height="36dp" android:tint="#FD4531"
++    android:viewportHeight="24.0" android:viewportWidth="24.0"
++    android:width="36dp" xmlns:android="http://schemas.android.com/apk/res/android">
++    <path android:fillColor="#FF000000" android:pathData="M6,19c0,1.1 0.9,2 2,2h8c1.1,0 2,-0.9 2,-2L18,7L6,7v12zM8.46,11.88l1.41,-1.41L12,12.59l2.12,-2.12 1.41,1.41L13.41,14l2.12,2.12 -1.41,1.41L12,15.41l-2.12,2.12 -1.41,-1.41L10.59,14l-2.13,-2.12zM15.5,4l-1,-1h-5l-1,1L5,4v2h14L19,4z"/>
++</vector>
+Index: app/src/main/java/com/example/plan/ui/dialog/ChoosePlanDialog.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/dialog/ChoosePlanDialog.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/dialog/ChoosePlanDialog.java	(date 1563466761000)
+@@ -74,7 +74,7 @@
+         mRecyclerView = mRoot.findViewById(R.id.choose_list_plan);
+         mAdapter = new ChoosePlanAdapter(mContext);
+         mAdapter.setClickCallBack(this);
+-        handleDefaultListClick();
++        //handleDefaultListClick();
+         mRecyclerView.setAdapter(mAdapter);
+         mController.loadListPlan();
+         mDialog = new AlertDialog.Builder(mContext).setView(mRoot).create();
+@@ -94,22 +94,22 @@
+         return mDialog;
+     }
+ 
+-    private void handleDefaultListClick(){
+-        LinearLayout headerToday = mRoot.findViewById(R.id.choose_plan_default_today);
+-        headerToday.setOnClickListener(new OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_TODAY, mContext.getString(R.string.nav_today)));
+-            }
+-        });
+-        LinearLayout headerImportant = mRoot.findViewById(R.id.choose_plan_default_important);
+-        headerImportant.setOnClickListener(new OnClickListener() {
+-            @Override
+-            public void onClick(View view) {
+-                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_IMPORTANT, mContext.getString(R.string.nav_important)));
+-            }
+-        });
+-    }
++//    private void handleDefaultListClick(){
++//        LinearLayout headerToday = mRoot.findViewById(R.id.choose_plan_default_today);
++//        headerToday.setOnClickListener(new OnClickListener() {
++//            @Override
++//            public void onClick(View view) {
++//                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_TODAY, mContext.getString(R.string.nav_today)));
++//            }
++//        });
++//        LinearLayout headerImportant = mRoot.findViewById(R.id.choose_plan_default_important);
++//        headerImportant.setOnClickListener(new OnClickListener() {
++//            @Override
++//            public void onClick(View view) {
++//                onItemClick(new ListPlan(AppConstants.DefaultListPlanID.PLAN_IMPORTANT, mContext.getString(R.string.nav_important)));
++//            }
++//        });
++//    }
+ 
+     private void observerDataChange(){
+         mController.getListPlan().observe(this, new Observer<List<ListPlan>>() {
+Index: app/src/main/java/com/example/plan/ui/storage/dao/TaskDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/dao/TaskDao.java	(date 1563529958455)
++++ app/src/main/java/com/example/plan/ui/storage/dao/TaskDao.java	(date 1563529958455)
+@@ -1,6 +1,8 @@
+ package com.example.plan.ui.storage.dao;
+ 
+ import android.arch.persistence.room.Dao;
++import android.arch.persistence.room.Delete;
++import android.arch.persistence.room.Insert;
+ import android.arch.persistence.room.Query;
+ 
+ import com.example.plan.ui.storage.model.TaskItem;
+@@ -13,6 +15,12 @@
+     @Query("SELECT * FROM task")
+     List<TaskItem> getAllTask();
+ 
+-    @Query("SELECT * FROM task WHERE mTaskId = :taskId")
++    @Query("SELECT * FROM task WHERE mListId = :taskId")
+     List<TaskItem> getTaskWithID(int taskId);
++
++    @Insert
++    long insertTask(TaskItem item);
++
++    @Delete
++    int deleteTask(TaskItem item);
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/dao/RemindDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/dao/RemindDao.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/dao/RemindDao.java	(date 1563466761000)
+@@ -1,7 +1,14 @@
+ package com.example.plan.ui.storage.dao;
+ 
+ import android.arch.persistence.room.Dao;
++import android.arch.persistence.room.Insert;
++
++import com.example.plan.entities.RemindMe;
++import com.example.plan.ui.storage.model.RemindItem;
+ 
+ @Dao
+ public interface RemindDao {
++
++    @Insert
++    long insertRemind(RemindItem remindMe);
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/dao/RepeatDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/dao/RepeatDao.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/dao/RepeatDao.java	(date 1563466761000)
+@@ -1,7 +1,14 @@
+ package com.example.plan.ui.storage.dao;
+ 
+ import android.arch.persistence.room.Dao;
++import android.arch.persistence.room.Insert;
++
++import com.example.plan.entities.Repeat;
++import com.example.plan.ui.storage.model.RepeatItem;
+ 
+ @Dao
+ public interface RepeatDao {
++
++    @Insert
++    long insertRepeatItem(RepeatItem repeatItem);
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/dao/ListPlanDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/dao/ListPlanDao.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/dao/ListPlanDao.java	(date 1563466761000)
+@@ -1,6 +1,7 @@
+ package com.example.plan.ui.storage.dao;
+ 
+ import android.arch.persistence.room.Dao;
++import android.arch.persistence.room.Delete;
+ import android.arch.persistence.room.Insert;
+ import android.arch.persistence.room.OnConflictStrategy;
+ import android.arch.persistence.room.Query;
+@@ -20,4 +21,7 @@
+ 
+     @Query("SELECT * FROM list_plan WHERE mName = :name")
+     ListPlan getDuplicateListPlan(String name);
++
++    @Delete
++    int deleteItem(ListPlan item);
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/model/TaskItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/model/TaskItem.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/model/TaskItem.java	(date 1563466761000)
+@@ -2,6 +2,7 @@
+ 
+ import android.arch.persistence.room.Entity;
+ import android.arch.persistence.room.ForeignKey;
++import android.arch.persistence.room.Ignore;
+ import android.arch.persistence.room.PrimaryKey;
+ 
+ import com.example.plan.entities.Task;
+@@ -9,23 +10,17 @@
+ import static android.arch.persistence.room.ForeignKey.CASCADE;
+ 
+ @Entity(tableName = "task", foreignKeys = @ForeignKey(entity = ListPlan.class, parentColumns = "mId",
+-        childColumns = "mTaskId", onDelete = CASCADE))
++        childColumns = "mListId", onDelete = CASCADE))
+ public class TaskItem extends Task {
+ 
+     @PrimaryKey(autoGenerate = true)
+     public int mId;
+ 
+-    public int mTaskId;
+-
+-    public TaskItem(String name, boolean isCompleted, int repeat, String note) {
+-        super(name, isCompleted, repeat, note);
++    public TaskItem(String name, boolean isCompleted, String note, int idListPlan) {
++        super(name, isCompleted, note, idListPlan);
+     }
+ 
+-    public int getmTaskId() {
+-        return mTaskId;
+-    }
++    public TaskItem(){
+ 
+-    public void setmTaskId(int mTaskId) {
+-        this.mTaskId = mTaskId;
+     }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/model/RemindItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/model/RemindItem.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/model/RemindItem.java	(date 1563466761000)
+@@ -9,23 +9,31 @@
+ import static android.arch.persistence.room.ForeignKey.CASCADE;
+ 
+ @Entity(tableName = "remind", foreignKeys = @ForeignKey(entity = TaskItem.class, parentColumns = "mId", childColumns =
+-        "mRemindId", onDelete = CASCADE))
++        "mTaskId", onDelete = CASCADE))
+ public class RemindItem extends RemindMe {
+ 
+     @PrimaryKey(autoGenerate = true)
+     public int mId;
+ 
+-    public int mRemindId;
++    public int mTaskId;
+ 
+     public RemindItem(long date, int hour, int minute, int second) {
+         super(date, hour, minute, second);
+     }
+ 
+-    public int getmRemindId() {
+-        return mRemindId;
++    public int getmId() {
++        return mId;
++    }
++
++    public void setmId(int mId) {
++        this.mId = mId;
++    }
++
++    public int getmTaskId() {
++        return mTaskId;
+     }
+ 
+-    public void setmRemindId(int mRemindId) {
+-        this.mRemindId = mRemindId;
++    public void setmTaskId(int mTaskId) {
++        this.mTaskId = mTaskId;
+     }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/model/RepeatItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/model/RepeatItem.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/model/RepeatItem.java	(date 1563466761000)
+@@ -9,23 +9,31 @@
+ import static android.arch.persistence.room.ForeignKey.CASCADE;
+ 
+ @Entity(tableName = "repeat", foreignKeys = @ForeignKey(entity = TaskItem.class, parentColumns = "mId", childColumns =
+-        "mRepeatId", onDelete = CASCADE))
++        "mTaskId", onDelete = CASCADE))
+ public class RepeatItem extends Repeat {
+ 
+     @PrimaryKey(autoGenerate = true)
+     public int mId;
+ 
+-    public int mRepeatId;
++    public int mTaskId;
+ 
+     public RepeatItem(int none){
+         super(none);
+     }
+ 
+-    public int getmRepeatId() {
+-        return mRepeatId;
++    public int getmId() {
++        return mId;
++    }
++
++    public void setmId(int mId) {
++        this.mId = mId;
++    }
++
++    public int getmTaskId() {
++        return mTaskId;
+     }
+ 
+-    public void setmRepeatId(int mRepeatId) {
+-        this.mRepeatId = mRepeatId;
++    public void setmTaskId(int mTaskId) {
++        this.mTaskId = mTaskId;
+     }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/preference/MyPreference.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/preference/MyPreference.java	(date 1563517538504)
++++ app/src/main/java/com/example/plan/ui/storage/preference/MyPreference.java	(date 1563517538504)
+@@ -0,0 +1,40 @@
++package com.example.plan.ui.storage.preference;
++
++import android.content.Context;
++import android.content.SharedPreferences;
++
++public class MyPreference {
++
++    private static MyPreference mInstance;
++    public static Context mContext;
++    public static final String NAME_SR = "plan_sp";
++    public static final String KEY_SCREEN_HEIGHT = "screen_height";
++    public static final String KEY_ITEM_RECYCLER_VIEW_HEIGHT = "item_height";
++    public static final String KEY_STATUS_BAR_HEIGHT = "status_bar_height";
++    public static final String KEY_TOOL_BAR_HEIGHT = "tool_bar_height";
++
++    public static MyPreference getInstance(Context context){
++        if(mInstance == null){
++            mInstance = new MyPreference(context);
++        }
++
++        return mInstance;
++    }
++
++    public MyPreference(Context applicationContext){
++        mContext = applicationContext;
++    }
++
++
++    public static void setValueWithKey(String key, int value, Context context){
++        SharedPreferences pref = context.getApplicationContext().getSharedPreferences(NAME_SR, Context.MODE_PRIVATE);
++        SharedPreferences.Editor editor = pref.edit();
++        editor.putInt(key, value);
++        editor.commit();
++    }
++
++    public static int getValueWithKey(String key, Context context){
++        SharedPreferences pref = context.getApplicationContext().getSharedPreferences(NAME_SR, Context.MODE_PRIVATE);
++        return pref.getInt(key, -1);
++    }
++}
+Index: app/src/main/java/com/example/plan/ui/storage/repository/TaskRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/repository/TaskRepository.java	(date 1563529944381)
++++ app/src/main/java/com/example/plan/ui/storage/repository/TaskRepository.java	(date 1563529944381)
+@@ -39,6 +39,11 @@
+ 
+     @Override
+     public long insertItem(Object item) {
+-        return 0;
++        return mTaskDao.insertTask((TaskItem)item);
++    }
++
++    @Override
++    public long deleteItem(Object item) {
++        return mTaskDao.deleteTask((TaskItem)item);
+     }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/repository/RemindRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/repository/RemindRepository.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/repository/RemindRepository.java	(date 1563466761000)
+@@ -1,4 +1,44 @@
+ package com.example.plan.ui.storage.repository;
+ 
+-public class RemindRepository {
++import com.example.plan.ui.storage.dao.RemindDao;
++import com.example.plan.ui.storage.model.RemindItem;
++
++import java.util.List;
++
++public class RemindRepository extends AbsRepository {
++
++    public static RemindRepository mInstance;
++    private RemindDao mRemindDao;
++
++    public static RemindRepository getInstance(RemindDao remindDao) {
++        if (mInstance == null) {
++            mInstance = new RemindRepository(remindDao);
++        }
++
++        return mInstance;
++    }
++
++    public RemindRepository(RemindDao remindDao) {
++        mRemindDao = remindDao;
++    }
++
++    @Override
++    public List loadListItem() {
++        return null;
++    }
++
++    @Override
++    public List loadListItemWithId(int id) {
++        return null;
++    }
++
++    @Override
++    public long insertItem(Object item) {
++        return mRemindDao.insertRemind((RemindItem) item);
++    }
++
++    @Override
++    public long deleteItem(Object item) {
++        return -1;
++    }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/repository/RepeatRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/repository/RepeatRepository.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/repository/RepeatRepository.java	(date 1563466761000)
+@@ -1,4 +1,45 @@
+ package com.example.plan.ui.storage.repository;
+ 
+-public class RepeatRepository {
++import com.example.plan.ui.storage.dao.RepeatDao;
++import com.example.plan.ui.storage.model.RepeatItem;
++
++import java.util.List;
++
++public class RepeatRepository extends AbsRepository{
++
++    public static RepeatRepository mInstance;
++    private RepeatDao mRepeatDao;
++
++
++    public static RepeatRepository getInstance(RepeatDao repeatDao){
++        if(mInstance == null){
++            mInstance = new RepeatRepository(repeatDao);
++        }
++
++        return mInstance;
++    }
++
++    public RepeatRepository(RepeatDao repeatDao){
++        mRepeatDao = repeatDao;
++    }
++
++    @Override
++    public List loadListItemWithId(int id) {
++        return null;
++    }
++
++    @Override
++    public List loadListItem() {
++        return null;
++    }
++
++    @Override
++    public long insertItem(Object item) {
++        return mRepeatDao.insertRepeatItem((RepeatItem)item);
++    }
++
++    @Override
++    public long deleteItem(Object item) {
++        return -1;
++    }
+ }
+Index: app/src/main/java/com/example/plan/ui/storage/repository/ListPlanRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/repository/ListPlanRepository.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/repository/ListPlanRepository.java	(date 1563466761000)
+@@ -48,4 +48,10 @@
+     public List loadListItemWithId(int id) {
+         return null;
+     }
++
++    @Override
++    public long deleteItem(Object item) {
++        return mListPlanDao.deleteItem((ListPlan)item);
++    }
+ }
++
+Index: app/src/main/java/com/example/plan/ui/storage/AppDatabase.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/storage/AppDatabase.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/storage/AppDatabase.java	(date 1563466761000)
+@@ -1,9 +1,11 @@
+ package com.example.plan.ui.storage;
+ 
++import android.arch.persistence.db.SupportSQLiteDatabase;
+ import android.arch.persistence.room.Database;
+ import android.arch.persistence.room.Room;
+ import android.arch.persistence.room.RoomDatabase;
+ import android.content.Context;
++import android.support.annotation.NonNull;
+ 
+ import com.example.plan.ui.storage.dao.ListPlanDao;
+ import com.example.plan.ui.storage.dao.RemindDao;
+@@ -29,8 +31,33 @@
+         if(mInstance == null){
+             mInstance = Room.databaseBuilder(context, AppDatabase.class, DB_NAME)
+                     .allowMainThreadQueries()
++                    .addCallback(callback)
+                     .build();
+         }
+         return mInstance;
+     }
++
++
++    public static RoomDatabase.Callback callback = new RoomDatabase.Callback(){
++        @Override
++        public void onCreate(@NonNull SupportSQLiteDatabase db) {
++            super.onCreate(db);
++            insertDefaultPlan();
++        }
++
++        @Override
++        public void onOpen(@NonNull SupportSQLiteDatabase db) {
++            super.onOpen(db);
++        }
++    };
++
++    public static void insertDefaultPlan(){
++        new Thread(new Runnable() {
++            @Override
++            public void run() {
++                mInstance.getListPlanDao().insertListPlan(new ListPlan("To day"));
++                mInstance.getListPlanDao().insertListPlan(new ListPlan("Important"));
++            }
++        }).start();
++    }
+ }
+Index: app/src/main/java/com/example/plan/ui/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/activity/MainActivity.java	(date 1563528516675)
++++ app/src/main/java/com/example/plan/ui/activity/MainActivity.java	(date 1563528516675)
+@@ -1,9 +1,12 @@
+ package com.example.plan.ui.activity;
+ 
+ import android.arch.lifecycle.Observer;
++import android.content.Context;
+ import android.databinding.DataBindingUtil;
++import android.os.Handler;
+ import android.support.annotation.NonNull;
+ import android.support.annotation.Nullable;
++import android.support.design.widget.AppBarLayout;
+ import android.support.design.widget.BottomSheetBehavior;
+ import android.support.design.widget.FloatingActionButton;
+ import android.support.v4.view.GravityCompat;
+@@ -14,9 +17,13 @@
+ import android.support.v7.widget.Toolbar;
+ import android.text.Editable;
+ import android.text.TextWatcher;
++import android.util.DisplayMetrics;
+ import android.util.Log;
++import android.util.TypedValue;
+ import android.view.View;
+ import android.view.WindowManager;
++import android.view.inputmethod.EditorInfo;
++import android.view.inputmethod.InputMethodManager;
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.ImageView;
+@@ -28,7 +35,10 @@
+ import com.example.plan.ui.dialog.ChooseDayRepeat;
+ import com.example.plan.ui.dialog.ChoosePlanDialog;
+ import com.example.plan.ui.dialog.ChooseDateTimeDialog;
++import com.example.plan.ui.fragment.FileListTaskFragment;
++import com.example.plan.ui.fragment.ICollapsingToolBarChange;
+ import com.example.plan.ui.fragment.NavigationFragment;
++import com.example.plan.ui.storage.preference.MyPreference;
+ 
+ import java.util.Calendar;
+ 
+@@ -49,6 +59,10 @@
+     private Button mChooseRepeat;
+     private ImageView mSubmitTask;
+     private EditText mNameNewTask;
++    private AppBarLayout mAppBarLayout;
++    private ICollapsingToolBarChange mCollapingChange;
++
++    private FileListTaskFragment mFileListFragment;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -57,16 +71,105 @@
+         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+         initController();
+         observerStateDrawer();
++        observerTaskChange();
++        showDefaultFragment();
+         initDrawerLayout();
+         initView();
+         initBottomViewAddTask();
+         handleActionFromBottomSheet();
+         setSoftInputMode();
++        getDefaultSize();
++
++        mAppBarLayout = findViewById(R.id.app_bar);
++        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
++            @Override
++            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
++                int collapingSize =  (-Math.abs(i) + appBarLayout.getTotalScrollRange());
++                int sizeContainer = MyPreference.getValueWithKey(MyPreference.KEY_SCREEN_HEIGHT, getApplication())
++                        - MyPreference.getValueWithKey(MyPreference.KEY_TOOL_BAR_HEIGHT, getApplication())
++                        - MyPreference.getValueWithKey(MyPreference.KEY_STATUS_BAR_HEIGHT, getApplication())
++                        - collapingSize;
++                mCollapingChange.collapingChange(sizeContainer);
++            }
++        });
++
++    }
++
++    private void observerTaskChange(){
++        mController.getTaskChange().observe(this, new Observer<Boolean>() {
++            @Override
++            public void onChanged(@Nullable Boolean aBoolean) {
++                mFileListFragment.loadingTaskList(mFileListFragment.getCurrentListId());
++            }
++        });
++    }
++
++    private void hideSoftKeyboard(final View view) {
++        new Handler().postDelayed(new Runnable() {
++            @Override
++            public void run() {
++                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
++                imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
++            }
++        }, 300);
++
++    }
++
++    private void showSoftKeyboard(final View view) {
++
++        new Handler().postDelayed(new Runnable() {
++            @Override
++            public void run() {
++                if (view.requestFocus()) {
++                    InputMethodManager imm = (InputMethodManager)
++                            getSystemService(Context.INPUT_METHOD_SERVICE);
++                    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
++                }
++            }
++        }, 300);
++    }
++
++    private void getDefaultSize() {
++        if (MyPreference.getValueWithKey(MyPreference.KEY_SCREEN_HEIGHT, this) == -1) {
++            DisplayMetrics metrics = new DisplayMetrics();
++            getWindowManager().getDefaultDisplay().getMetrics(metrics);
++            MyPreference.setValueWithKey(MyPreference.KEY_SCREEN_HEIGHT, metrics.heightPixels, this);
++        }
++
++        if (MyPreference.getValueWithKey(MyPreference.KEY_STATUS_BAR_HEIGHT, this) == -1) {
++            MyPreference.setValueWithKey(MyPreference.KEY_STATUS_BAR_HEIGHT, getStatusBarHeight(), this);
++        }
++
++
++        if (MyPreference.getValueWithKey(MyPreference.KEY_TOOL_BAR_HEIGHT, this) == -1) {
++            TypedValue tv = new TypedValue();
++            if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
++                int actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
++                MyPreference.setValueWithKey(MyPreference.KEY_TOOL_BAR_HEIGHT, actionBarHeight, this);
++            }
++        }
++    }
++
++    public int getStatusBarHeight() {
++        int result = 0;
++        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
++        if (resourceId > 0) {
++            result = getResources().getDimensionPixelSize(resourceId);
++        }
++        return result;
++    }
++
++
++    private void showDefaultFragment() {
++        mFileListFragment = new FileListTaskFragment();
++        mCollapingChange = mFileListFragment;
++        getSupportFragmentManager().beginTransaction().replace(R.id.page_container, mFileListFragment).commit();
+ 
+     }
+ 
+-    private void setSoftInputMode(){
++    private void setSoftInputMode() {
+         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
++        hideSoftKeyboard(mNameNewTask);
+     }
+ 
+ 
+@@ -92,10 +195,11 @@
+         mSubmitTask.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                Log.d("dong.nd1", "AA");
++                mController.addNewTaskToDB();
+             }
+         });
+         mNameNewTask = findViewById(R.id.edt_add_task);
++
+         mNameNewTask.addTextChangedListener(new TextWatcher() {
+             @Override
+             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+@@ -104,26 +208,27 @@
+ 
+             @Override
+             public void onTextChanged(CharSequence s, int start, int before, int count) {
+-                if(s.equals("") || s.length() == 0){
++                if (s.equals("") || s.length() == 0) {
+                     mSubmitTask.setImageResource(R.drawable.ic_add_task_disable);
+                     mSubmitTask.setClickable(false);
+-                }else{
++                } else {
+                     mSubmitTask.setImageResource(R.drawable.ic_add_task);
+                     mSubmitTask.setClickable(true);
+                 }
++                mController.getCurrentDataNewTask().setName(s.toString());
+             }
+ 
+             @Override
+             public void afterTextChanged(Editable s) {
+             }
+         });
+-
++        mNameNewTask.onEditorAction(EditorInfo.IME_ACTION_DONE);
+         observerChoosePlan();
+         observerChooseDateTime();
+         observerChooseRepeat();
+     }
+ 
+-    private void observerChoosePlan(){
++    private void observerChoosePlan() {
+         Observer<String> observer = new Observer<String>() {
+             @Override
+             public void onChanged(@Nullable String s) {
+@@ -133,7 +238,7 @@
+         mController.getmChoosePlan().observe(this, observer);
+     }
+ 
+-    private void observerChooseDateTime(){
++    private void observerChooseDateTime() {
+         Observer<String> observer = new Observer<String>() {
+             @Override
+             public void onChanged(@Nullable String s) {
+@@ -143,7 +248,7 @@
+         mController.getmChooseDateTime().observe(this, observer);
+     }
+ 
+-    private void observerChooseRepeat(){
++    private void observerChooseRepeat() {
+         Observer<String> observer = new Observer<String>() {
+             @Override
+             public void onChanged(@Nullable String s) {
+@@ -212,11 +317,13 @@
+         toggle.syncState();
+ 
+         NavigationFragment fragment = new NavigationFragment();
++        fragment.setNavigationChange(mFileListFragment);
+         fragment.setMainController(mController);
+         getSupportFragmentManager().beginTransaction().replace(R.id.navigation_container, fragment).commit();
+     }
+ 
+     private void showBottomAddTask(boolean value) {
++
+         if (value) {
+             mAddListBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+             mBinding.containerViewId.setShowFloatBtn(false);
+@@ -246,13 +353,13 @@
+         }
+     };
+ 
+-    private void showRepeatDialog(){
++    private void showRepeatDialog() {
+         ChooseDayRepeat dayRepeat = new ChooseDayRepeat();
+         dayRepeat.setArguments(mController);
+         dayRepeat.show(getSupportFragmentManager(), CHOOSE_REPEAT_DAY_TAG);
+     }
+ 
+-    private void showDialogChoosePlan(View v){
++    private void showDialogChoosePlan(View v) {
+         ChoosePlanDialog dialog = new ChoosePlanDialog();
+         Bundle bundle = new Bundle();
+         bundle.putFloat(ChoosePlanDialog.POSITION_SHOW_DIALOG_X, v.getX());
+@@ -263,7 +370,7 @@
+     }
+ 
+ 
+-    private void showTimePickerDialog(){
++    private void showTimePickerDialog() {
+         Calendar mcurrentTime = Calendar.getInstance();
+         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+         int minute = mcurrentTime.get(Calendar.MINUTE);
+Index: app/src/main/java/com/example/plan/ui/fragment/INavigationChange.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/INavigationChange.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/fragment/INavigationChange.java	(date 1563466761000)
+@@ -0,0 +1,7 @@
++package com.example.plan.ui.fragment;
++
++import com.example.plan.ui.storage.model.ListPlan;
++
++public interface INavigationChange {
++    void onNavigationChange(ListPlan listPlan);
++}
+Index: app/src/main/java/com/example/plan/ui/fragment/FileListTaskAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/FileListTaskAdapter.java	(date 1563529729505)
++++ app/src/main/java/com/example/plan/ui/fragment/FileListTaskAdapter.java	(date 1563529729505)
+@@ -0,0 +1,110 @@
++package com.example.plan.ui.fragment;
++
++import android.content.Context;
++import android.support.annotation.NonNull;
++import android.support.v7.widget.RecyclerView;
++import android.util.Log;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.view.ViewTreeObserver;
++import android.widget.CheckBox;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import com.example.plan.R;
++import com.example.plan.ui.storage.model.TaskItem;
++import com.example.plan.ui.storage.preference.MyPreference;
++
++import java.util.List;
++
++public class FileListTaskAdapter extends RecyclerView.Adapter<FileListTaskAdapter.FileListViewHolder> {
++
++    private Context mContext;
++    private List<TaskItem> mData;
++    private LayoutInflater mInflater;
++    private ITaskItemClick mTaskItemAction;
++
++    public FileListTaskAdapter(Context context,ITaskItemClick itemClick ){
++        mContext = context;
++        mInflater = LayoutInflater.from(mContext);
++        mTaskItemAction = itemClick;
++    }
++
++    interface ITaskItemClick{
++        void deleteTask(TaskItem taskItem);
++    }
++
++
++    @NonNull
++    @Override
++    public FileListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
++        View view = mInflater.inflate(R.layout.list_task_item, viewGroup, false);
++        return new FileListViewHolder(view);
++    }
++
++
++    @Override
++    public void onBindViewHolder(@NonNull final FileListViewHolder fileListViewHolder, final int i) {
++        final TaskItem item = mData.get(i);
++        if (item.getmName() == null || item.getmName().equals("")) {
++            Log.d("dong.nd1", "I: " + i);
++            fileListViewHolder.itemView.setVisibility(View.INVISIBLE);
++            return;
++        }else if(fileListViewHolder.itemView.getVisibility() == View.INVISIBLE){
++            fileListViewHolder.itemView.setVisibility(View.VISIBLE);
++        }
++        fileListViewHolder.mName.setText(item.mName);
++        fileListViewHolder.itemView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
++
++        if(MyPreference.getValueWithKey(MyPreference.KEY_ITEM_RECYCLER_VIEW_HEIGHT, mContext) == -1){
++            final ViewTreeObserver viewTreeObserver = fileListViewHolder.itemView.getViewTreeObserver();
++            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
++                @Override
++                public void onGlobalLayout() {
++                    fileListViewHolder.itemView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
++                    MyPreference.setValueWithKey(MyPreference.KEY_ITEM_RECYCLER_VIEW_HEIGHT, fileListViewHolder.itemView.getMeasuredHeight(), mContext);
++                }
++            });
++        }
++
++        fileListViewHolder.mDelete.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                mTaskItemAction.deleteTask(item);
++            }
++        });
++
++    }
++
++    @Override
++    public int getItemCount() {
++        return (mData != null ? mData.size() : 0);
++    }
++
++    public void updateData(List<TaskItem> data){
++        mData = data;
++        notifyDataSetChanged();
++    }
++
++    public void showFullScreenRow(int numRow){
++        if (mData == null) return;
++        for(int i = 0 ; i < numRow; i++){
++            mData.add(new TaskItem());
++        }
++        notifyDataSetChanged();
++    }
++
++    public class FileListViewHolder extends RecyclerView.ViewHolder{
++        private CheckBox mRadio;
++        private TextView mName;
++        private ImageView mDelete;
++
++        public FileListViewHolder(View view){
++            super(view);
++            mRadio = view.findViewById(R.id.task_item_radio);
++            mName = view.findViewById(R.id.task_item_name);
++            mDelete = view.findViewById(R.id.task_item_delete);
++        }
++    }
++}
+Index: app/src/main/java/com/example/plan/ui/fragment/MyDividerItemDecoration.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/MyDividerItemDecoration.java	(date 1563501881489)
++++ app/src/main/java/com/example/plan/ui/fragment/MyDividerItemDecoration.java	(date 1563501881489)
+@@ -0,0 +1,39 @@
++package com.example.plan.ui.fragment;
++
++import android.content.Context;
++import android.content.res.TypedArray;
++import android.graphics.Canvas;
++import android.graphics.drawable.Drawable;
++import android.support.v4.content.ContextCompat;
++import android.support.v7.widget.RecyclerView;
++import android.view.View;
++
++import com.example.plan.R;
++
++public class MyDividerItemDecoration extends RecyclerView.ItemDecoration {
++
++    private Drawable mDivider;
++
++    public MyDividerItemDecoration(Context context) {
++        mDivider = context.getResources().getDrawable(R.drawable.divider);
++    }
++
++    @Override
++    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
++        int left = parent.getPaddingLeft();
++        int right = parent.getWidth() - parent.getPaddingRight();
++
++        int childCount = parent.getChildCount();
++        for (int i = 0; i < childCount; i++) {
++            View child = parent.getChildAt(i);
++
++            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
++
++            int top = child.getBottom() + params.bottomMargin;
++            int bottom = top + mDivider.getIntrinsicHeight();
++
++            mDivider.setBounds(left, top, right, bottom);
++            mDivider.draw(c);
++        }
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/plan/ui/fragment/ICollapsingToolBarChange.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/ICollapsingToolBarChange.java	(date 1563517538519)
++++ app/src/main/java/com/example/plan/ui/fragment/ICollapsingToolBarChange.java	(date 1563517538519)
+@@ -0,0 +1,5 @@
++package com.example.plan.ui.fragment;
++
++public interface ICollapsingToolBarChange {
++    void collapingChange(int height);
++}
+Index: app/src/main/java/com/example/plan/ui/fragment/FileListAdapter.java
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/FileListAdapter.java	(date 0)
++++ app/src/main/java/com/example/plan/ui/fragment/FileListAdapter.java	(date 0)
+@@ -1,62 +0,0 @@
+-package com.example.plan.ui.fragment;
+-
+-import android.content.Context;
+-import android.support.annotation.NonNull;
+-import android.support.v7.widget.RecyclerView;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.RadioButton;
+-import android.widget.TextView;
+-
+-import com.example.plan.R;
+-import com.example.plan.ui.storage.model.TaskItem;
+-
+-import java.util.List;
+-
+-public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileListViewHolder> {
+-
+-    private Context mContext;
+-    private List<TaskItem> mData;
+-    private LayoutInflater mInflater;
+-
+-    public FileListAdapter(Context context){
+-        mContext = context;
+-        mInflater = LayoutInflater.from(mContext);
+-    }
+-
+-
+-    @NonNull
+-    @Override
+-    public FileListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+-        View view = mInflater.inflate(R.layout.list_task_item, viewGroup, false);
+-        return new FileListViewHolder(view);
+-    }
+-
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull FileListViewHolder fileListViewHolder, int i) {
+-
+-    }
+-
+-    @Override
+-    public int getItemCount() {
+-        return (mData != null ? mData.size() : 0);
+-    }
+-
+-    public void updateData(List<TaskItem> data){
+-        mData = data;
+-        notifyDataSetChanged();
+-    }
+-
+-    public class FileListViewHolder extends RecyclerView.ViewHolder{
+-        private RadioButton mRadio;
+-        private TextView mName;
+-
+-        public FileListViewHolder(View view){
+-            super(view);
+-            mRadio = view.findViewById(R.id.task_item_radio);
+-            mName = view.findViewById(R.id.task_item_name);
+-        }
+-    }
+-}
+Index: app/src/main/java/com/example/plan/ui/fragment/NavigationAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/NavigationAdapter.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/fragment/NavigationAdapter.java	(date 1563466761000)
+@@ -7,6 +7,8 @@
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.LinearLayout;
+ import android.widget.TextView;
+ 
+ import com.example.plan.R;
+@@ -21,20 +23,22 @@
+     private Context mContext;
+     private LayoutInflater mInflate;
+     private IItemAction mActionCallBack;
++    private IItemAction mItemClick;
+ 
+     public interface IItemAction {
+         void itemClick(ListPlan item);
+ 
+-        void itemLongClick();
++        void deleteItem(ListPlan item);
+     }
+ 
+     public void setItemActionCallBack(IItemAction itemAction) {
+         mActionCallBack = itemAction;
+     }
+ 
+-    public NavigationAdapter(Context context) {
++    public NavigationAdapter(Context context, IItemAction itemClick) {
+         mContext = context;
+         mInflate = LayoutInflater.from(mContext);
++        mItemClick = itemClick;
+     }
+ 
+ 
+@@ -54,9 +58,22 @@
+ 
+     @Override
+     public void onBindViewHolder(@NonNull NavHolder navHolder, final int i) {
+-        ListPlan item = mData.get(i);
++
++        final ListPlan item = mData.get(i);
+         navHolder.mName.setText(item.getmName());
+         navHolder.mCount.setText("1");
++        navHolder.mDelete.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                mItemClick.deleteItem(item);
++            }
++        });
++        navHolder.mItemContainer.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                mItemClick.itemClick(item);
++            }
++        });
+     }
+ 
+ 
+@@ -67,6 +84,10 @@
+ 
+     public void updateDataChange(List<ListPlan> data) {
+         mData = data;
++        if (mData.size() > 1) {
++            mData.remove(0);
++            mData.remove(0);
++        }
+         //addEmptyItem();
+         notifyDataSetChanged();
+     }
+@@ -74,11 +95,15 @@
+     public class NavHolder extends RecyclerView.ViewHolder {
+         private TextView mName;
+         private TextView mCount;
++        private ImageView mDelete;
++        private LinearLayout mItemContainer;
+ 
+         public NavHolder(View view) {
+             super(view);
+             mName = view.findViewById(R.id.nav_item_name);
+             mCount = view.findViewById(R.id.nav_item_count);
++            mDelete = view.findViewById(R.id.nav_item_delete);
++            mItemContainer = view.findViewById(R.id.nav_item_container);
+         }
+     }
+ 
+Index: app/src/main/java/com/example/plan/ui/fragment/NavigationFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/NavigationFragment.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/fragment/NavigationFragment.java	(date 1563466761000)
+@@ -33,6 +33,11 @@
+     private NavigationAdapter mAdapter;
+     private RecyclerView mRecyclerView;
+     private TextView mAddList;
++    private INavigationChange mNavigationChange;
++
++    public void setNavigationChange(INavigationChange change){
++        mNavigationChange = change;
++    }
+ 
+     public void setMainController(MainController mainController){
+         mMainController = mainController;
+@@ -48,6 +53,10 @@
+ 
+ 
+ 
++    public void onRefresh(){
++        startLoading();
++    }
++
+     @Override
+     public void startLoading() {
+         mController.loadNavigationItem();
+@@ -57,6 +66,7 @@
+         mController.getListData().observe(this, new Observer<List<ListPlan>>() {
+             @Override
+             public void onChanged(@Nullable List<ListPlan> listPlans) {
++                Log.d("dong.nd1", "change");
+                 mAdapter.updateDataChange(listPlans);
+             }
+         });
+@@ -86,7 +96,7 @@
+                 showDialogAddList();
+             }
+         });
+-        mAdapter = new NavigationAdapter(getContext());
++        mAdapter = new NavigationAdapter(getContext(), this);
+         mAdapter.setItemActionCallBack(this);
+         mRecyclerView = view.findViewById(R.id.nav_recyclerview);
+         mRecyclerView.setAdapter(mAdapter);
+@@ -129,20 +139,13 @@
+ 
+     @Override
+     public void itemClick(ListPlan item) {
+-        enterFileListTask(item.getmId());
++        mNavigationChange.onNavigationChange(item);
+         mMainController.setValueStateDrawer(true);
+     }
+ 
+     @Override
+-    public void itemLongClick() {
+-
++    public void deleteItem(ListPlan listPlan) {
++        mController.deletePlan(listPlan);
+     }
+ 
+-    private void enterFileListTask(int listTaskID){
+-        FileListTaskFragment fragment = new FileListTaskFragment();
+-        Bundle bundle = new Bundle();
+-        bundle.putInt(FileListTaskFragment.LIST_TASK_ID, listTaskID);
+-        fragment.setArguments(bundle);
+-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.page_container, fragment).commit();
+-    }
+ }
+Index: app/src/main/java/com/example/plan/ui/fragment/FileListTaskFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/fragment/FileListTaskFragment.java	(date 1563529854125)
++++ app/src/main/java/com/example/plan/ui/fragment/FileListTaskFragment.java	(date 1563529854125)
+@@ -6,42 +6,55 @@
+ import android.support.annotation.NonNull;
+ import android.support.annotation.Nullable;
+ import android.support.v4.app.Fragment;
++import android.support.v7.widget.DividerItemDecoration;
++import android.support.v7.widget.LinearLayoutManager;
++import android.support.v7.widget.RecyclerView;
++import android.util.DisplayMetrics;
++import android.util.Log;
++import android.util.TypedValue;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ 
+ import com.example.plan.R;
+ import com.example.plan.presenter.FileListController;
++import com.example.plan.ui.storage.model.ListPlan;
+ import com.example.plan.ui.storage.model.TaskItem;
++import com.example.plan.ui.storage.preference.MyPreference;
+ 
+ import java.util.List;
+ 
+-public class FileListTaskFragment extends Fragment implements ILoading{
++public class FileListTaskFragment extends Fragment implements INavigationChange, ICollapsingToolBarChange, FileListTaskAdapter.ITaskItemClick {
+ 
+     public static final String LIST_TASK_ID = "list_task_id";
+ 
+     private FileListController mController;
++    private FileListTaskAdapter mAdapter;
+     private int mIdListTask = -1;
++    private View mRootView;
+ 
+     @Override
+     public void setArguments(@Nullable Bundle args) {
+         super.setArguments(args);
+         mIdListTask = args.getInt(LIST_TASK_ID);
++
+     }
++
+ 
+     @Override
+     public void onAttach(Context context) {
+         super.onAttach(context);
+         mController = new FileListController(getActivity().getApplication());
+         observerDataChange();
+-        startLoading();
++        mIdListTask = 1;
++        mController.loadListTaskWithID(1);
+     }
+ 
+     private void observerDataChange(){
+         mController.getData().observe(this, new Observer<List<TaskItem>>() {
+             @Override
+             public void onChanged(@Nullable List<TaskItem> taskItems) {
+-
++                mAdapter.updateData(taskItems);
+             }
+         });
+     }
+@@ -49,21 +62,53 @@
+     @Nullable
+     @Override
+     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+-        View view = inflater.inflate(R.layout.file_list_task, container, false);
++        mRootView = inflater.inflate(R.layout.file_list_task, container, false);
+ 
+-        return view;
++        return mRootView;
+     }
+ 
+     @Override
+     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+         super.onViewCreated(view, savedInstanceState);
++        initView();
++    }
++
++    private void initView(){
++        RecyclerView listIteam = mRootView.findViewById(R.id.file_list_task);
++        mAdapter = new FileListTaskAdapter(getContext(), this);
++        listIteam.setAdapter(mAdapter);
++        listIteam.setLayoutManager(new LinearLayoutManager(getContext()));
++        listIteam.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
++    }
+ 
++    public void loadingTaskList(int idListTask){
++        mIdListTask = idListTask;
++        mController.loadListTaskWithID(idListTask);
++    }
++
++    @Override
++    public void onNavigationChange(ListPlan listPlan) {
++        mIdListTask = listPlan.getmId();
++        loadingTaskList(listPlan.getmId());
+     }
+ 
+     @Override
+-    public void startLoading() {
+-        if(mIdListTask != -1){
+-            mController.loadListTaskWithID(mIdListTask);
++    public void collapingChange(int height) {
++        int numRow = height/ MyPreference.getValueWithKey(MyPreference.KEY_ITEM_RECYCLER_VIEW_HEIGHT, getContext());
++        int realRow = mAdapter.getItemCount();
++        if(numRow > realRow){
++            mAdapter.showFullScreenRow(numRow - realRow);
++        }else{
++
+         }
+     }
++
++    public int getCurrentListId(){
++        return mIdListTask;
++    }
++
++    @Override
++    public void deleteTask(TaskItem taskItem) {
++        mController.deleteTask(taskItem);
++    }
+ }
+Index: app/src/main/java/com/example/plan/ui/injection/RepositoryFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/ui/injection/RepositoryFactory.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/ui/injection/RepositoryFactory.java	(date 1563466761000)
+@@ -7,6 +7,8 @@
+ import com.example.plan.ui.storage.dao.ListPlanDao;
+ import com.example.plan.ui.storage.repository.AbsRepository;
+ import com.example.plan.ui.storage.repository.ListPlanRepository;
++import com.example.plan.ui.storage.repository.RemindRepository;
++import com.example.plan.ui.storage.repository.RepeatRepository;
+ import com.example.plan.ui.storage.repository.TaskRepository;
+ 
+ public class RepositoryFactory {
+@@ -22,6 +24,7 @@
+                 break;
+             case AppConstants
+                     .DataType.REMIND:
++                repository = RemindRepository.getInstance(database.getRemindDao());
+                 break;
+             case AppConstants
+                     .DataType.TASK:
+@@ -29,6 +32,7 @@
+                 break;
+             case AppConstants
+                     .DataType.REPEAT_ME:
++                repository = RepeatRepository.getInstance(database.getRepeatDao());
+                 break;
+         }
+         return repository;
+Index: app/src/main/java/com/example/plan/usecase/AddTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/AddTask.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/AddTask.java	(date 1563466761000)
+@@ -0,0 +1,41 @@
++package com.example.plan.usecase;
++
++import com.example.plan.entities.Task;
++import com.example.plan.ui.storage.model.ListPlan;
++
++import java.util.List;
++
++public class AddTask implements IInteractor<Task>{
++    private IRepository mRepository;
++    private IThreadExecutor mThread;
++    private Task mTask;
++    private IDataCallback<ListPlan> mCallBack;
++
++    public AddTask(IRepository repository, IThreadExecutor thread, Task task, IDataCallback callback){
++        mRepository = repository;
++        mThread = thread;
++        mTask = task;
++        mCallBack = callback;
++    }
++
++
++    @Override
++    public void run() {
++        mThread.run(new Runnable() {
++            @Override
++            public void run() {
++                long result = mRepository.insertItem(mTask);
++                if(result > 0 ){
++                    mCallBack.executeSuccess(result);
++                }else{
++                    mCallBack.executeFail();
++                }
++            }
++        });
++    }
++
++    @Override
++    public void onLoadDataFinish(List<Task> data) {
++
++    }
++}
+Index: app/src/main/java/com/example/plan/usecase/AddRemind.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/AddRemind.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/AddRemind.java	(date 1563466761000)
+@@ -0,0 +1,35 @@
++package com.example.plan.usecase;
++
++import com.example.plan.entities.RemindMe;
++import com.example.plan.ui.storage.model.ListPlan;
++
++import java.util.List;
++
++public class AddRemind implements IInteractor<RemindMe>{
++    private IRepository mRepository;
++    private IThreadExecutor mThread;
++    private RemindMe mRemind;
++    private IDataCallback<ListPlan> mCallBack;
++
++    public AddRemind(IRepository repository, IThreadExecutor thread, RemindMe remind, IDataCallback<ListPlan> callback){
++        mRepository = repository;
++        mThread = thread;
++        mRemind = remind;
++        mCallBack = callback;
++    }
++
++    @Override
++    public void run() {
++        mThread.run(new Runnable() {
++            @Override
++            public void run() {
++                long result = mRepository.insertItem(mRemind);
++            }
++        });
++    }
++
++    @Override
++    public void onLoadDataFinish(List<RemindMe> data) {
++
++    }
++}
+Index: app/src/main/java/com/example/plan/usecase/AddRepeat.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/AddRepeat.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/AddRepeat.java	(date 1563466761000)
+@@ -0,0 +1,4 @@
++package com.example.plan.usecase;
++
++public class AddRepeat {
++}
+Index: app/src/main/java/com/example/plan/usecase/DeleteTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/DeleteTask.java	(date 1563529729522)
++++ app/src/main/java/com/example/plan/usecase/DeleteTask.java	(date 1563529729522)
+@@ -0,0 +1,40 @@
++package com.example.plan.usecase;
++
++import com.example.plan.ui.storage.model.ListPlan;
++import com.example.plan.ui.storage.model.TaskItem;
++
++import java.util.List;
++
++public class DeleteTask implements IInteractor<TaskItem> {
++
++    private IRepository mRepository;
++    private IThreadExecutor mThread;
++    private TaskItem mTaskItem;
++    private IDataCallback<ListPlan> mCallBack;
++
++
++    public DeleteTask(IRepository repository, IThreadExecutor thread, TaskItem taskItem, IDataCallback callback){
++        mRepository = repository;
++        mThread = thread;
++        mTaskItem =taskItem;
++        mCallBack = callback;
++    }
++
++    @Override
++    public void run() {
++        mThread.run(new Runnable() {
++            @Override
++            public void run() {
++                long value = mRepository.deleteItem(mTaskItem);
++                if(value > 0){
++                    mCallBack.executeSuccess(value);
++                }
++            }
++        });
++    }
++
++    @Override
++    public void onLoadDataFinish(List<TaskItem> data) {
++
++    }
++}
+Index: app/src/main/java/com/example/plan/usecase/DetelePlan.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/DetelePlan.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/DetelePlan.java	(date 1563466761000)
+@@ -0,0 +1,38 @@
++package com.example.plan.usecase;
++
++import android.media.Image;
++
++import com.example.plan.entities.Task;
++import com.example.plan.ui.storage.model.ListPlan;
++
++import java.util.List;
++
++public class DetelePlan implements IInteractor<ListPlan>{
++    private IRepository mRepository;
++    private IThreadExecutor mThread;
++    private ListPlan mPlan;
++    private IDataCallback<ListPlan> mCallBack;
++
++    public DetelePlan(IRepository repository, IThreadExecutor thread, ListPlan plan, IDataCallback callback){
++        mRepository = repository;
++        mThread = thread;
++        mCallBack = callback;
++        mPlan = plan;
++    }
++
++    @Override
++    public void run() {
++        mThread.run(new Runnable() {
++            @Override
++            public void run() {
++                long result = mRepository.deleteItem(mPlan);
++                mCallBack.executeSuccess(result);
++            }
++        });
++    }
++
++    @Override
++    public void onLoadDataFinish(List<ListPlan> data) {
++        mCallBack.dataCallBack(data);
++    }
++}
+Index: app/src/main/java/com/example/plan/usecase/AddListPlan.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/AddListPlan.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/AddListPlan.java	(date 1563466761000)
+@@ -1,5 +1,7 @@
+ package com.example.plan.usecase;
+ 
++import android.util.Log;
++
+ import com.example.plan.ui.storage.model.ListPlan;
+ 
+ import java.util.List;
+@@ -23,8 +25,9 @@
+             @Override
+             public void run() {
+                 ListPlan newPlan = new ListPlan(mName);
+-                mRepository.insertItem(newPlan);
+-                mCallBack.executeSuccess();
++                long result =  mRepository.insertItem(newPlan);
++                Log.d("dong.nd1", "Result: " + result);
++                mCallBack.executeSuccess(result);
+             }
+         });
+     }
+Index: app/src/main/java/com/example/plan/usecase/IRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/IRepository.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/IRepository.java	(date 1563466761000)
+@@ -9,4 +9,6 @@
+     List<T> loadListItemWithId(int id);
+ 
+     long insertItem(T item);
++
++    long deleteItem(T item);
+ }
+Index: app/src/main/java/com/example/plan/usecase/LoadListTask.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/LoadListTask.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/LoadListTask.java	(date 1563466761000)
+@@ -1,6 +1,5 @@
+ package com.example.plan.usecase;
+ 
+-import com.example.plan.entities.Task;
+ import com.example.plan.ui.storage.model.TaskItem;
+ 
+ import java.util.List;
+Index: app/src/main/java/com/example/plan/usecase/IDataCallback.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/usecase/IDataCallback.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/usecase/IDataCallback.java	(date 1563466761000)
+@@ -4,6 +4,6 @@
+ 
+ public interface IDataCallback<T> {
+     void dataCallBack(List<T> data);
+-    void executeSuccess();
++    void executeSuccess(long result);
+     void executeFail();
+ }
+Index: app/src/main/java/com/example/plan/entities/Task.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/entities/Task.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/entities/Task.java	(date 1563466761000)
+@@ -3,14 +3,14 @@
+ public class Task {
+     public String mName;
+     public boolean mIsCompleted;
+-    public int mRepeat;
+     public String mNote;
++    public int mListId;
+ 
+-    public Task(String name, boolean isCompleted, int repeat, String note) {
++    public Task(String name, boolean isCompleted, String note, int idListPlan) {
+         mName = name;
+         mIsCompleted = isCompleted;
+-        mRepeat = repeat;
+         mNote = note;
++        mListId = idListPlan;
+     }
+ 
+     public Task(){
+@@ -33,15 +33,6 @@
+         this.mIsCompleted = mIsCompleted;
+     }
+ 
+-
+-    public int getmRepeat() {
+-        return mRepeat;
+-    }
+-
+-    public void setmRepeat(int mRepeat) {
+-        this.mRepeat = mRepeat;
+-    }
+-
+     public String getmNote() {
+         return mNote;
+     }
+@@ -49,4 +40,12 @@
+     public void setmNote(String mNote) {
+         this.mNote = mNote;
+     }
++
++    public int getmListId() {
++        return mListId;
++    }
++
++    public void setmListId(int mListId) {
++        this.mListId = mListId;
++    }
+ }
+Index: app/src/main/java/com/example/plan/presenter/AbsController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/presenter/AbsController.java	(date 1563466761000)
++++ app/src/main/java/com/example/plan/presenter/AbsController.java	(date 1563466761000)
+@@ -4,7 +4,9 @@
+ import android.arch.lifecycle.AndroidViewModel;
+ import android.content.Context;
+ 
++import com.example.plan.entities.RemindMe;
+ import com.example.plan.entities.Repeat;
++import com.example.plan.entities.Task;
+ import com.example.plan.presenter.contant.DataLoader;
+ import com.example.plan.ui.injection.RepositoryFactory;
+ import com.example.plan.ui.storage.model.ListPlan;
+@@ -44,9 +46,15 @@
+     }
+ 
+     public class ParaForNewTask{
+-        public ListPlan mListPlan;
+-        public Timer mTimer;
++        public int mIdListPlan;
++        public Task mTask;
++        public RemindMe mRemind;
+         public Repeat mRepeat;
++
++//        public ParaForNewTask(IRepository repository, IThreadExecutor thread, Task task, RemindMe remind, Repeat repeat){
++//            mRepository = repository;
++//            mThread = thread;
++//        }
+     }
+ 
+     /*private Dao getDaoType(int dataType) {
+Index: app/src/main/java/com/example/plan/presenter/MainController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/presenter/MainController.java	(date 1563525862902)
++++ app/src/main/java/com/example/plan/presenter/MainController.java	(date 1563525862902)
+@@ -11,6 +11,10 @@
+ import com.example.plan.entities.Task;
+ import com.example.plan.presenter.contant.AppConstants;
+ import com.example.plan.ui.storage.model.ListPlan;
++import com.example.plan.ui.storage.model.RemindItem;
++import com.example.plan.ui.storage.model.TaskItem;
++import com.example.plan.usecase.AddRemind;
++import com.example.plan.usecase.AddTask;
+ import com.example.plan.usecase.IDataCallback;
+ import com.example.plan.usecase.LoadListPlan;
+ 
+@@ -26,6 +30,7 @@
+     private MutableLiveData<String> mChoosePlan = new MutableLiveData<>();
+     private MutableLiveData<String> mChooseDateTime = new MutableLiveData<>();
+     private MutableLiveData<String> mChooseRepeat = new MutableLiveData<>();
++    private MutableLiveData<Boolean> mTaskChange = new MutableLiveData<>();
+ 
+     public MainController(Application application){
+         super(application);
+@@ -56,7 +61,15 @@
+     }
+ 
+     @Override
+-    public void executeSuccess() {
++    public void executeSuccess(long id) {
++        // refresh data list item
++        mTaskChange.postValue(true);
++
++        if(id != -1){
++            // insert Repeat
++            addRemindToDb((int)id);
++            // insert Remind
++        }
+ 
+     }
+ 
+@@ -76,8 +89,24 @@
+         return mData;
+     }
+ 
++    public LiveData<Boolean> getTaskChange(){
++        return mTaskChange;
++    }
++
+     public void addNewTaskToDB(){
+-        Log.d("dong.nd1", mDataForNewTak.mRemindMe.mDate + " | " + mDataForNewTak.getmRemindMe().getmHour() + ":" + mDataForNewTak.getmRemindMe().getmMinute());
++        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.TASK);
++        TaskItem taskItem = new TaskItem(mDataForNewTak.mName, false, null, mDataForNewTak.mIdListTask);
++        AddTask addTask = new AddTask(para.mRepository, para.mThread, taskItem, this);
++        addTask.run();
++
++    }
++
++    public void addRemindToDb(int id){
++        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.REMIND);
++        RemindItem remindItem = new RemindItem(mDataForNewTak.mRemindMe.mDate, mDataForNewTak.mRemindMe.mHour, mDataForNewTak.mRemindMe.mMinute, mDataForNewTak.mRemindMe.mSecond);
++        remindItem.setmTaskId(id);
++        AddRemind addTask = new AddRemind(para.mRepository, para.mThread, remindItem, this);
++        addTask.run();
+     }
+ 
+     public DataForNewTask getCurrentDataNewTask(){
+@@ -85,7 +114,9 @@
+     }
+ 
+     public class DataForNewTask{
+-        private ListPlan mPlan;
++        private int mIdListTask;
++        private String mName;
++
+         private Repeat mRepeat;
+         private RemindMe mRemindMe;
+ 
+@@ -94,18 +125,14 @@
+         }
+ 
+         public void reset(){
+-            mPlan = new ListPlan();
+             mRemindMe = new RemindMe();
+             mRepeat = new Repeat();
+         }
+ 
+-        public ListPlan getmPlan() {
+-            return mPlan;
+-        }
+ 
+-        public void setmPlan(ListPlan mPlan) {
+-            this.mPlan = mPlan;
+-            mChoosePlan.setValue(mPlan.mName);
++        public void setmPlan(ListPlan plan) {
++            mIdListTask = plan.getmId();
++            mChoosePlan.setValue(plan.getmName());
+         }
+ 
+         public Repeat getmRepeat() {
+@@ -138,6 +165,10 @@
+             result += date;
+             return result;
+         }
++
++        public void setName(String name){
++            mName = name;
++        }
+     }
+ 
+ }
+Index: app/src/main/java/com/example/plan/presenter/FileListController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/presenter/FileListController.java	(date 1563529729532)
++++ app/src/main/java/com/example/plan/presenter/FileListController.java	(date 1563529729532)
+@@ -7,6 +7,7 @@
+ 
+ import com.example.plan.presenter.contant.AppConstants;
+ import com.example.plan.ui.storage.model.TaskItem;
++import com.example.plan.usecase.DeleteTask;
+ import com.example.plan.usecase.IDataCallback;
+ import com.example.plan.usecase.LoadListTask;
+ 
+@@ -30,12 +31,19 @@
+         listTask.run();
+     }
+ 
++    public void deleteTask(TaskItem taskItem){
++        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.TASK);
++        DeleteTask deleteTask = new DeleteTask(para.mRepository, para.mThread, taskItem, this);
++        deleteTask.run();
++    }
++
+     @Override
+     public void dataCallBack(List<TaskItem> data) {
++        mData.postValue(data);
+     }
+ 
+     @Override
+-    public void executeSuccess() {
++    public void executeSuccess(long id) {
+ 
+     }
+ 
+Index: app/src/main/java/com/example/plan/presenter/NavigationControler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/plan/presenter/NavigationControler.java	(date 1563525144463)
++++ app/src/main/java/com/example/plan/presenter/NavigationControler.java	(date 1563525144463)
+@@ -8,6 +8,7 @@
+ import com.example.plan.presenter.contant.AppConstants;
+ import com.example.plan.ui.storage.model.ListPlan;
+ import com.example.plan.usecase.AddListPlan;
++import com.example.plan.usecase.DetelePlan;
+ import com.example.plan.usecase.IDataCallback;
+ import com.example.plan.usecase.LoadListPlan;
+ 
+@@ -48,7 +49,13 @@
+     }
+ 
+     @Override
+-    public void executeSuccess() {
++    public void executeSuccess(long id) {
+         loadNavigationItem();
+     }
++
++    public void deletePlan(ListPlan plan){
++        ParaForUseCase para = getParaForUsecase(AppConstants.DataType.LIST_PLAN);
++        DetelePlan detelePlan = new DetelePlan(para.mRepository,para.mThread, plan, this);
++        detelePlan.run();
++    }
+ }
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(date 1563500574352)
++++ app/build.gradle	(date 1563500574352)
+@@ -4,7 +4,7 @@
+     compileSdkVersion 28
+     defaultConfig {
+         applicationId "com.example.plan"
+-        minSdkVersion 27
++        minSdkVersion 26
+         targetSdkVersion 28
+         versionCode 1
+         versionName "1.0"
